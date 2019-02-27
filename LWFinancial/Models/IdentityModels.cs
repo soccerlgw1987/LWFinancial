@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data.Entity;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -10,10 +11,15 @@ namespace LWFinancial.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit https://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+        [Display(Name = "First Name")]
         public string FirstName { get; set; }
+        [Display(Name = "Last Name")]
         public string LastName { get; set; }
+        [Display(Name = "Full Name")]
         public string FullName { get; set; }
+        [Display(Name = "Display Name")]
         public string DisplayName { get; set; }
+        [Display(Name = "Avatar Path")]
         public string AvatarPath { get; set; }
 
         public virtual Household Household { get; set; }
@@ -51,5 +57,6 @@ namespace LWFinancial.Models
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<BudgetItem> BudgetItems { get; set; }
+
     }
 }

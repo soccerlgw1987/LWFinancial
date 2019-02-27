@@ -9,9 +9,12 @@ namespace LWFinancial.Models
     public class Budget
     {
         public int Id { get; set; }
-        [MaxLength(20)]
+        [MaxLength(30), MinLength(3)]
         public string Name { get; set; }
-        public decimal Amount { get; set; }
+        [MaxLength(100), MinLength(3)]
+        public string Decscription { get; set; }
+        public Decimal DesiredAmount { get; set; }
+        public Decimal CurrentAmount { get; set; }
 
         public int HouseholdId { get; set; }
 

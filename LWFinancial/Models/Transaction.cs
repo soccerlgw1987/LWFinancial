@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LWFinancial.Enumerations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -9,18 +10,18 @@ namespace LWFinancial.Models
     public class Transaction
     {
         public int Id { get; set; }
-        [MaxLength(50)]
+        [MaxLength(50), MinLength(3)]
         public string Name { get; set; }
-        public string Type { get; set; }
+        public TransactionType Type { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
-        public decimal Amount { get; set; }
+        public Decimal Amount { get; set; }
+        public Decimal ReconciledAmount { get; set; }
         public bool Reconciled { get; set; }
-        public decimal ReconciledAmount { get; set; }
 
         public int AccountId { get; set; }
-        public int BudgetItemId { get; set; }
-        public int EnteredById { get; set; }
+        public int? BudgetItemId { get; set; }
+        public string EnteredById { get; set; }
 
         public virtual Account Account { get; set; }
         public virtual BudgetItem BudgetItem { get; set; }

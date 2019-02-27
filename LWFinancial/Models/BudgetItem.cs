@@ -9,9 +9,10 @@ namespace LWFinancial.Models
     public class BudgetItem
     {
         public int Id { get; set; }
-        [MaxLength(20)]
+        [MaxLength(30), MinLength(3)]
         public string Name { get; set; }
-        public decimal Amount { get; set; }
+        public Decimal DesiredAmount { get; set; }
+        public Decimal CurrentAmount { get; set; }
 
         public int BudgetId { get; set; }
 

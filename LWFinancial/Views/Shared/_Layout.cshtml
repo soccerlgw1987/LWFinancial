@@ -1,44 +1,514 @@
-﻿<!DOCTYPE html>
-<html>
+﻿@using Microsoft.AspNet.Identity
+
+<!doctype html>
+<html class="fixed">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+
+    <!-- Basic -->
+    <meta charset="UTF-8">
+
+    <title>Landon Wyant - Financial</title>
+    <meta name="keywords" content="HTML5 Admin Template" />
+    <meta name="description" content="JSOFT Admin - Responsive HTML5 Template">
+    <meta name="author" content="JSOFT.net">
+
+
+    <!-- Mobile Metas -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Web Fonts  -->
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800|Shadows+Into+Light" rel="stylesheet" type="text/css">
+
+    <!-- Vendor CSS -->
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome.css" rel="stylesheet" />
+    <link href="~/Content/magnific-popup.css" rel="stylesheet" />
+    <link href="~/Content/datepicker3.css" rel="stylesheet" />
+
+    <!-- Specific Page Vendor CSS -->
+    <link href="~/Content/jquery-ui-1.10.4.custom.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-multiselect.css" rel="stylesheet" />
+    <link href="~/Content/morris.css" rel="stylesheet" />
+    <link href="~/Content/select2.css" rel="stylesheet" />
+    <link href="~/Content/datatables.css" rel="stylesheet" />
+    <link href="~/Content/jquery.isotope.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-tagsinput.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-colorpicker.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-timepicker.css" rel="stylesheet" />
+    <link href="~/Content/basic.css" rel="stylesheet" />
+    <link href="~/Content/dropzone.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-markdown.min.css" rel="stylesheet" />
+    <link href="~/Content/summernote.css" rel="stylesheet" />
+    <link href="~/Content/summernote-bs3.css" rel="stylesheet" />
+    <link href="~/Content/codemirror.css" rel="stylesheet" />
+    <link href="~/Content/monokai.css" rel="stylesheet" />
+    <link href="~/Content/owl.carousel.css" rel="stylesheet" />
+    <link href="~/Content/owl.theme.css" rel="stylesheet" />
+    <link href="~/Content/pnotify.custom.css" rel="stylesheet" />
+
+    <!-- Theme CSS -->
+    <link href="~/Content/theme.css" rel="stylesheet" />
+
+    <!-- Skin CSS -->
+    <link href="~/Content/default.css" rel="stylesheet" />
+
+    <!-- Theme Custom CSS -->
+    <link href="~/Content/theme-custom.css" rel="stylesheet" />
+
+    <!-- Head Libs -->
+    <script src="~/Scripts/modernizr.js"></script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="~/img/favicon.ico">
 
 </head>
 <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    <div class="container body-content">
-        @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
-        </footer>
-    </div>
 
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
+    <section class="body">
+
+        <!-- start: header -->
+        <header class="header">
+            <div class="logo-container">
+                <a class="logo">
+                    LWFinancial
+                </a>
+                <div class="visible-xs toggle-sidebar-left" data-toggle-class="sidebar-left-opened" data-target="html" data-fire-event="sidebar-left-opened">
+                    <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                </div>
+            </div>
+
+            <!-- start: search & user box -->
+            <div class="header-right">
+                <ul class="notifications">
+                    @*<li>
+                            <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                                <i class="fa fa-tasks"></i>
+                                <span class="badge">3</span>
+                            </a>
+
+                            <div class="dropdown-menu notification-menu large">
+                                <div class="notification-title">
+                                    <span class="pull-right label label-default">3</span>
+                                    Recent Tickets
+                                </div>
+
+                                <div class="content">
+                                    <ul>
+                                        @foreach(var item in ticketHelper)
+                                        {
+                                            <li>
+                                                <p class="clearfix mb-xs">
+                                                    <span class="title">@title</span>
+                                                    <span class="message">@description</span>
+                                                </p>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </li>*@
+
+                    @*<li>
+                        <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                            <i class="fa fa-envelope"></i>
+                            @if (notificationHelper.GetUnreadNotificationCount() > 0)
+                            {
+                                <span class="badge">
+                                    @notificationHelper.GetUnreadNotificationCount()
+                                </span>
+                            }
+                        </a>
+
+                        <div class="dropdown-menu notification-menu">
+                            <div class="notification-title">
+                                <span class="pull-right label label-default">
+                                    Total: @notificationHelper.GetNotificationCount()
+                                </span>
+                                Recent Messages
+                            </div>
+
+                            <div class="content">
+                                <ul>
+                                    @foreach (var item in notificationHelper.GetNewNotifications().Take(3))
+                                    {
+                                        <li>
+                                            <span class="title">LWBugTracker</span>
+                                            <span class="message">@item.NotificationBody</span>
+                                        </li>
+                                    }
+                                </ul>
+
+                                <hr />
+
+                                <div class="text-right">
+                                    <a href="@Url.Action("Index","TicketNotifications")" class="view-more">View All</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>*@
+                    @*<li>
+                        <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                            <i class="fa fa-bell"></i>
+                            @if (@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count() > 0)
+                            {
+                                <span class="badge">@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count()</span>
+                            }
+                        </a>
+
+                        <div class="dropdown-menu notification-menu">
+                            <div class="notification-title">
+                                <span class="pull-right label label-default"></span>
+                                Alerts
+                            </div>
+
+                            <div class="content">
+                                <ul>
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
+                                        {
+                                            if (item.CompletionDate < DateTime.Now)
+                                            {
+                                                <li>
+                                                    <div class="image">
+                                                        <i class="fa fa-exclamation bg-danger"></i>
+                                                    </div>
+                                                    <span class="title">Overdue!</span>
+                                                    <span class="message">Project: @item.Name</span>
+                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                </li>
+                                            }
+                                            else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
+                                            {
+                                                <li>
+                                                    <div class="image">
+                                                        <i class="fa fa-lock bg-warning"></i>
+                                                    </div>
+                                                    <span class="title">Approaching Completion Date</span>
+                                                    <span class="message">Project: @item.Name</span>
+                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                </li>
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
+                                        {
+                                            if (item.CompletionDate < DateTime.Now)
+                                            {
+                                                <li>
+                                                    <div class="image">
+                                                        <i class="fa fa-exclamation bg-danger"></i>
+                                                    </div>
+                                                    <span class="title">Overdue!</span>
+                                                    <span class="message">Project: @item.Name</span>
+                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                </li>
+                                            }
+                                            else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
+                                            {
+                                                <li>
+                                                    <div class="image">
+                                                        <i class="fa fa-lock bg-warning"></i>
+                                                    </div>
+                                                    <span class="title">Approaching Completion Date</span>
+                                                    <span class="message">Project: @item.Name</span>
+                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                </li>
+                                            }
+                                        }
+                                    }
+
+                                </ul>
+                                <hr />
+                                <div class="text-right">
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a href="@Url.Action("Index","Projects")" class="view-more">View All</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="@Url.Action("IndexMy","Projects")" class="view-more">View All</a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </li>*@
+                </ul>
+
+                <span class="separator"></span>
+
+                <div id="userbox" class="userbox">
+                    <a href="#" data-toggle="dropdown">
+                        <figure class="profile-picture">
+
+                            @*@{
+                                var avatarPath = "";
+
+                            }
+
+                            @if (User.Identity.IsAuthenticated)
+                            {
+                                var db = new ApplicationDbContext();
+                                var userId = User.Identity.GetUserId();
+                                avatarPath = db.Users.Find(userId).AvatarPath;
+
+                                if (avatarPath == null)
+                                {
+                                    <img src="~/img/ui-bg_diagonals-thick_20_666666_40x40.png" alt="Joseph Doe" class="img-circle" data-lock-picture="~/img/!logged-user.jpg" />
+                                }
+                                else
+                                {
+                                    <img src="@avatarPath" alt="Joseph Doe" class="img-circle" data-lock-picture="~/img/!logged-user.jpg" />
+                                }
+                            }
+                            else
+                            {
+                                <img src="~/img/!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="~/img/!logged-user.jpg" />
+
+                            }*@
+
+                        </figure>
+                        <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@JSOFT.com">
+                            <span class="name">
+                                @User.Identity.GetUserName()
+                            </span>
+                            <span class="role">
+                                @if (HttpContext.Current.User.IsInRole("Admin"))
+                                {
+                                    <b>Admin</b>
+                                }
+                                else if (HttpContext.Current.User.IsInRole("Head"))
+                                {
+                                    <b>Head of Household</b>
+                                }
+                                else if (HttpContext.Current.User.IsInRole("Delegate"))
+                                {
+                                    <b>Delegate</b>
+                                }
+                                else if (HttpContext.Current.User.IsInRole("Member"))
+                                {
+                                    <b>Member</b>
+                                }
+                                else
+                                {
+                                    <b>No assigned role</b>
+                                }
+
+                            </span>
+                        </div>
+
+                        <i class="fa custom-caret"></i>
+                    </a>
+
+                    <div class="dropdown-menu">
+                        <ul class="list-unstyled">
+                            <li class="divider"></li>
+                            <li>
+                                <a role="menuitem" tabindex="-1" href="@Url.Action("Profile","Users")"><i class="fa fa-user"></i> My Profile</a>
+                            </li>
+                            <li>
+                                @if (User.Identity.Name == "admindemo@mailinator.com" || User.Identity.Name == "pmdemo@mailinator.com" || User.Identity.Name == "devdemo@mailinator.com" || User.Identity.Name == "subdemo@mailinator.com")
+                                {
+                                    <a role="menuitem" tabindex="-1" href="@Url.Action("Landing","Account")"><i class="fa fa-power-off"></i> Logout</a>
+                                }
+                                else
+                                {
+                                    <a role="menuitem" tabindex="-1" href="@Url.Action("Login","Account")"><i class="fa fa-power-off"></i> Logout</a>
+                                }
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- end: search & user box -->
+        </header>
+        <!-- end: header -->
+
+        <div class="inner-wrapper">
+            <!-- start: sidebar -->
+            <aside id="sidebar-left" class="sidebar-left">
+
+                <div class="sidebar-header">
+                    <div class="sidebar-title">
+                        Navigation
+                    </div>
+                    <div class="sidebar-toggle hidden-xs" data-toggle-class="sidebar-left-collapsed" data-target="html" data-fire-event="sidebar-left-toggle">
+                        <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
+                    </div>
+                </div>
+
+                <div class="nano">
+                    <div class="nano-content">
+                        <nav id="menu" class="nav-main" role="navigation">
+                            <ul class="nav nav-main">
+                                <li class="nav-active">
+                                    <a href="@Url.Action("Index","Home")">
+                                        <i class="fa fa-home" aria-hidden="true"></i>
+                                        <span>Dashboard</span>
+                                    </a>
+                                </li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Users")">
+                                            <i class="fa fa-tasks" aria-hidden="true"></i>
+                                            <span>Assign Roles</span>
+                                        </a>
+                                    </li>
+                                }
+                                @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                {
+                                    <li>
+                                        <a href="@Url.Action("Index", "Projects")">
+                                            <i class="fa fa-briefcase" aria-hidden="true"></i>
+                                            <span>All Projects</span>
+                                        </a>
+                                    </li>
+                                }
+
+                                <li>
+                                    <a href="@Url.Action("IndexMy","Projects")">
+                                        <i class="fa fa-briefcase" aria-hidden="true"></i>
+                                        <span>My Projects</span>
+                                    </a>
+                                </li>
+
+                                <li>
+                                    <a href="@Url.Action("Index","Tickets")">
+                                        <i class="fa fa-ticket" aria-hidden="true"></i>
+                                        <span>Tickets</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+
+                        <hr class="separator" />
+
+                        <hr class="separator" />
+                    </div>
+                </div>
+            </aside>
+            <!-- end: sidebar -->
+            @RenderBody()
+        </div>
+
+        <!--Sidebar right-->
+        <aside id="sidebar-right" class="sidebar-right">
+            <div class="nano">
+                <div class="nano-content">
+                    <a href="#" class="mobile-close visible-xs">
+                        Collapse <i class="fa fa-chevron-right"></i>
+                    </a>
+
+                    <div class="sidebar-right-wrapper">
+
+                        <div class="sidebar-widget widget-calendar">
+                            <h6>Calendar</h6>
+                            <div data-plugin-datepicker data-plugin-skin="dark"></div>
+
+                            <ul>
+                                <li>
+                                    <span>Today's Date</span>
+                                    <time datetime="2014-04-19T00:00+00:00">@DateTime.Now.ToString("MM/dd/yyyy")</time>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+        <!-- end: sidebar -->
+    </section>
+
+    <!-- Vendor -->
+    <script src="~/Scripts/jquery.js"></script>
+    <script src="~/Scripts/jquery.browser.mobile.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/nanoscroller.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/magnific-popup.js"></script>
+    <script src="~/Scripts/jquery.placeholder.js"></script>
+
+    <!-- Specific Page Vendor -->
+    <script src="~/Scripts/jquery-ui-1.10.4.custom.js"></script>
+    <script src="~/Scripts/jquery.ui.touch-punch.js"></script>
+    <script src="~/Scripts/jquery.appear.js"></script>
+    <script src="~/Scripts/bootstrap-multiselect.js"></script>
+    <script src="~/Scripts/jquery.easypiechart.js"></script>
+    <script src="~/Scripts/jquery.flot.js"></script>
+    <script src="~/Scripts/jquery.flot.tooltip.js"></script>
+    <script src="~/Scripts/jquery.flot.pie.js"></script>
+    <script src="~/Scripts/jquery.flot.categories.js"></script>
+    <script src="~/Scripts/jquery.flot.resize.js"></script>
+    <script src="~/Scripts/jquery.sparkline.js"></script>
+    <script src="~/Scripts/raphael.js"></script>
+    <script src="~/Scripts/morris.js"></script>
+    <script src="~/Scripts/gauge.js"></script>
+    <script src="~/Scripts/snap.svg.js"></script>
+    <script src="~/Scripts/liquid.meter.js"></script>
+    <script src="~/Scripts/jquery.vmap.js"></script>
+    <script src="~/Scripts/jquery.vmap.sampledata.js"></script>
+    <script src="~/Scripts/jquery.vmap.world.js"></script>
+    <script src="~/Scripts/jquery.vmap.africa.js"></script>
+    <script src="~/Scripts/jquery.vmap.asia.js"></script>
+    <script src="~/Scripts/jquery.vmap.australia.js"></script>
+    <script src="~/Scripts/jquery.vmap.europe.js"></script>
+    <script src="~/Scripts/jquery.vmap.north-america.js"></script>
+    <script src="~/Scripts/jquery.vmap.south-america.js"></script>
+    <script src="~/Scripts/select2.js"></script>
+    <script src="~/Scripts/jquery.dataTables.js"></script>
+    <script src="~/Scripts/dataTables.tableTools.min.js"></script>
+    <script src="~/Scripts/datatables.js"></script>
+    <script src="~/Scripts/jquery.isotope.js"></script>
+    <script src="~/Scripts/jquery.maskedinput.js"></script>
+    <script src="~/Scripts/bootstrap-tagsinput.js"></script>
+    <script src="~/Scripts/bootstrap-colorpicker.js"></script>
+    <script src="~/Scripts/bootstrap-timepicker.js"></script>
+    <script src="~/Scripts/spinner.js"></script>
+    <script src="~/Scripts/dropzone.js"></script>
+    <script src="~/Scripts/markdown.js"></script>
+    <script src="~/Scripts/to-markdown.js"></script>
+    <script src="~/Scripts/bootstrap-markdown.js"></script>
+    <script src="~/Scripts/codemirror.js"></script>
+    <script src="~/Scripts/active-line.js"></script>
+    <script src="~/Scripts/matchbrackets.js"></script>
+    <script src="~/Scripts/javascript.js"></script>
+    <script src="~/Scripts/xml.js"></script>
+    <script src="~/Scripts/htmlmixed.js"></script>
+    <script src="~/Scripts/css.js"></script>
+    <script src="~/Scripts/summernote.js"></script>
+    <script src="~/Scripts/bootstrap-maxlength.js"></script>
+    <script src="~/Scripts/ios7-switch.js"></script>
+    <script src="~/Scripts/pnotify.custom.js"></script>
+    <script src="~/Scripts/owl.carousel.js"></script>
+
+    <!-- Theme Base, Components and Settings -->
+    <script src="~/Scripts/theme.js"></script>
+
+    <!-- Theme Custom -->
+    <script src="~/Scripts/theme.custom.js"></script>
+
+    <!-- Theme Initialization Files -->
+    <script src="~/Scripts/theme.init.js"></script>
+
+    <!-- Examples -->
+    <script src="~/Scripts/examples.dashboard.js"></script>
+    <script src="~/Scripts/examples.datatables.editable.js"></script>
+    <script src="~/Scripts/examples.datatables.default.js"></script>
+    <script src="~/Scripts/examples.datatables.row.with.details.js"></script>
+    <script src="~/Scripts/examples.datatables.tabletools.js"></script>
+    <script src="~/Scripts/examples.mediagallery.js"></script>
+    <script src="~/Scripts/examples.advanced.form.js"></script>
+    <script src="~/Scripts/examples.lightbox.js"></script>
+    <script src="~/Scripts/examples.charts.js"></script>
+    <script src="~/Scripts/examples.notifications.js"></script>
+    <script src="~/Scripts/examples.timeline.js"></script>
+
+    <script>$('#datatable-editable').DataTable();</script>
+
+    @RenderSection("scripts", false)
+
 </body>
 </html>

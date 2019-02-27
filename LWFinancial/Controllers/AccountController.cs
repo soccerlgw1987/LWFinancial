@@ -61,6 +61,14 @@ namespace LWFinancial.Controllers
             return View();
         }
 
+        // GET: /Account/Landing
+        [AllowAnonymous]
+        public ActionResult Landing(string returnUrl)
+        {
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
+        }
+
         //
         // POST: /Account/Login
         [HttpPost]
