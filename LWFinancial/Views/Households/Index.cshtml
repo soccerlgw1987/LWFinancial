@@ -1,0 +1,77 @@
+﻿@model IEnumerable<LWFinancial.Models.Household>
+@using Microsoft.AspNet.Identity
+@using LWFinancial.Helpers
+@using LWFinancial.Models
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>All Households</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Households")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+    @{
+        var db = new ApplicationDbContext();
+        var user = db.Users.Find(User.Identity.GetUserId());
+    }
+
+    @if (user.HouseholdId == null)
+    {
+        <p>
+            @Html.ActionLink("Create New", "Create")
+        </p>
+    }
+
+    <div class="row">
+        @{
+            var userId = User.Identity.GetUserId();
+            var avatarPath = db.Users.Find(userId).AvatarPath;
+        }
+        @foreach (var item in Model)
+        {
+            <div class="col-md-6">
+                <section class="panel">
+                    <header class="panel-heading bg-primary">
+                        <div class="panel-heading-icon">
+                            @if (avatarPath == null)
+                            {
+                                <img src="~/img/ui-bg_diagonals-thick_20_666666_40x40.png" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
+                            }
+                            else
+                            {
+                                <img src="@avatarPath" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
+                            }
+                            @*<i class="fa fa-briefcase"></i>*@
+                        </div>
+                    </header>
+                    <div class="panel-body text-center">
+                        <h3 class="text-semibold mt-sm text-center">@item.Name</h3>
+                        <p class="text-center">@item.Decscription</p>
+                    </div>
+                    <div class="quote-footer">
+                        <span class="datetime">Created: @item.Created.ToString("MMMM dd, yyyy")</span> - <a href="#">Request to Join</a>
+                    </div>
+                </section>
+            </div>
+        }
+    </div>
+
+    <!-- end: page -->
+
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

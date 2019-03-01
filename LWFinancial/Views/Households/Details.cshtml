@@ -1,0 +1,206 @@
+﻿@model LWFinancial.Models.Household
+@using LWFinancial.Helpers
+@using LWFinancial.Enumerations
+@using Microsoft.AspNet.Identity
+
+@{
+    var householdsHelper = new HouseholdsHelper();
+}
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>@Model.Name Dashboard</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Households")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+                <li><span>Household</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="name text-semibold" style="text-align:center">Welcome to @Model.Name Dashboard</h2>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <!-- Header -->
+            <section class="panel panel-group">
+                <header class="panel-heading bg-primary">
+                    <div class="widget-profile-info">
+                        <div class="profile-picture">
+                            <img src="@Model.AvatarPath">
+                        </div>
+                        <div class="profile-info">
+                            <h4 class="name text-semibold">@Model.Name</h4>
+                            <h5 class="role">Welcome!</h5>
+                        </div>
+                    </div>
+                    <div class="quote-footer" style="text-align:right">
+                        @if (Model.Updated == null)
+                        {
+                            <span class="datetime"> Updated: @Model.Created.ToString("MMMM dd, yyyy")</span>
+                        }
+                        else
+                        {
+                            <span class="datetime"> Updated: @Model.Updated.Value.ToString("MMMM dd, yyyy")</span>
+                        }
+
+                        -
+                        <a href="@Url.Action("Edit", new { id = Model.Id})" style="color:white">Edit</a>
+                    </div>
+                </header>
+                <div class="panel-body">
+                    <div class="profile-quote">
+                        <p>
+                            @Model.Decscription
+                        </p>
+                    </div>
+                    <hr class="solid short mt-lg">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">488</div>
+                            <p class="text-xs text-muted mb-none">Budgets</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">1000</div>
+                            <p class="text-xs text-muted mb-none">Budget Items</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">123</div>
+                            <p class="text-xs text-muted mb-none">Transactions</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">123</div>
+                            <p class="text-xs text-muted mb-none">Members</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- BudgetItem Graph -->
+
+        </div>
+        <div class="col-md-6">
+            <!-- Budget Graph -->
+            <!-- Transaction Graph -->
+
+        </div>
+    </div>
+
+    <!-- Member List -->
+    <div class="row">
+        <h2 class="name text-semibold" style="text-align:center">Member List</h2>
+        @foreach (var user in householdsHelper.UsersInHousehold(Model.Id))
+        {
+            <div class="col-md-6">
+                <section class="panel panel-featured-left panel-featured-quartenary">
+                    <div class="panel-body">
+                        <div class="widget-summary">
+                            <div class="widget-summary-col widget-summary-col-icon">
+                                <div class="summary-icon bg-quartenary">
+                                    @if (user.AvatarPath != null)
+                                    {
+                                        <img src="@user.AvatarPath" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/img/!logged-user.jpg" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="widget-summary-col">
+                                <div class="summary">
+                                    <h2>@user.FullName</h2>
+                                </div>
+                                <div class="summary-footer">
+                                    <a class="text-muted text-uppercase">Transactions: 3765</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        }
+    </div>
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#inviteModal">Open Modal</button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="inviteModal" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Creating an invitation for @Model.Name</h4>
+                </div>
+                <div class="modal-body">
+                    @if (User.IsInRole(RoleNames.HOH.ToString()))
+                    {
+                        using (Html.BeginForm("Create", "HouseholdInvitations", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="form-horizontal">
+                                <h4>HouseholdInvitation</h4>
+                                <hr />
+                                <div class="form-group">
+                                    @Html.Label("Subject", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.Editor("Subject", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Body", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.TextArea("Body", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
+                                    <div class="col-md-10">
+                                        @Html.Editor("Email", new { htmlAttributes = new { @class = "form-control" } })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Create" class="btn btn-default" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    }
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- end: page -->
+
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

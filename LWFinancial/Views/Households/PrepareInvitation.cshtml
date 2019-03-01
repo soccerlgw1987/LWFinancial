@@ -1,0 +1,16 @@
+﻿@model LWFinancial.Models.Household
+
+@{
+    ViewBag.Title = "PrepareInvitation";
+}
+
+<h2>PrepareInvitation</h2>
+
+@using (Html.BeginForm("GenerateInvitation", "Households",FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.Id)
+
+    <button type="submit" class="btn btn-primary">Send Invitation</button>
+
+}

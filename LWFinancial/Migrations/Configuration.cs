@@ -28,13 +28,13 @@ namespace LWFinancial.Migrations
             {
                 roleManager.Create(new IdentityRole { Name = "Admin" });
             }
-            if (!context.Roles.Any(r => r.Name == "Head"))
+            if (!context.Roles.Any(r => r.Name == "HOH"))
             {
-                roleManager.Create(new IdentityRole { Name = "Head" });
+                roleManager.Create(new IdentityRole { Name = "HOH" });
             }
-            if (!context.Roles.Any(r => r.Name == "Delegate"))
+            if (!context.Roles.Any(r => r.Name == "Guest"))
             {
-                roleManager.Create(new IdentityRole { Name = "Delegate" });
+                roleManager.Create(new IdentityRole { Name = "Guest" });
             }
             if (!context.Roles.Any(r => r.Name == "Member"))
             {
@@ -56,6 +56,128 @@ namespace LWFinancial.Migrations
                 },
                 "test87");
             }
+
+            var userId = userManager.FindByEmail("soccerlgw1987@yahoo.com").Id;
+            userManager.AddToRole(userId, "Admin");
+
+            if (!context.Users.Any(u => u.Email == "yijing@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "yijing@mailinator.com",
+                    Email = "yijing@mailinator.com",
+                    FirstName = "Yijing",
+                    LastName = "Wyant",
+                    FullName = "Yijing Wyant",
+                    DisplayName = "Teng"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("yijing@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "ella@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "ella@mailinator.com",
+                    Email = "ella@mailinator.com",
+                    FirstName = "Ella",
+                    LastName = "Wyant",
+                    FullName = "Ella Wyant",
+                    DisplayName = "Wife"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("ella@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "emma@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "emma@mailinator.com",
+                    Email = "emma@mailinator.com",
+                    FirstName = "Emma",
+                    LastName = "Wyant",
+                    FullName = "Emma Wyant",
+                    DisplayName = "Child"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("emma@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "tara@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "tara@mailinator.com",
+                    Email = "tara@mailinator.com",
+                    FirstName = "Tara",
+                    LastName = "Wyant",
+                    FullName = "Tara Wyant",
+                    DisplayName = "The_Cat"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("tara@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "wayne@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "wayne@mailinator.com",
+                    Email = "wayne@mailinator.com",
+                    FirstName = "Wayne",
+                    LastName = "Turner",
+                    FullName = "Wayne Turner",
+                    DisplayName = "Bloodhog"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("wayne@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "casey@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "casey@mailinator.com",
+                    Email = "casey@mailinator.com",
+                    FirstName = "Casey",
+                    LastName = "Anderson",
+                    FullName = "Casey Anderson",
+                    DisplayName = "Friend"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("casey@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
+
+            if (!context.Users.Any(u => u.Email == "sandy@mailinator.com"))
+            {
+                userManager.Create(new ApplicationUser
+                {
+                    UserName = "sandy@mailinator.com",
+                    Email = "sandy@mailinator.com",
+                    FirstName = "Sandy",
+                    LastName = "Turner",
+                    FullName = "Sandy Turner",
+                    DisplayName = "Cousin"
+                },
+                "test87");
+            }
+
+            userId = userManager.FindByEmail("sandy@mailinator.com").Id;
+            userManager.AddToRole(userId, "Guest");
         }
     }
 }

@@ -19,16 +19,21 @@ namespace LWFinancial.Models
         public string FullName { get; set; }
         [Display(Name = "Display Name")]
         public string DisplayName { get; set; }
-        [Display(Name = "Avatar Path")]
+        [Display(Name = "Avatar")]
         public string AvatarPath { get; set; }
+        public int? HouseholdId { get; set; }
 
         public virtual Household Household { get; set; }
 
         public virtual ICollection<Transaction> Transactions { get; set; }
+        public virtual ICollection<HouseholdInvitation> HouseholdInvitations { get; set; }
+        public virtual ICollection<HouseholdNotification> HouseholdNotifications { get; set; }
 
         public ApplicationUser()
         {
             this.Transactions = new HashSet<Transaction>();
+            this.HouseholdInvitations = new HashSet<HouseholdInvitation>();
+            this.HouseholdNotifications = new HashSet<HouseholdNotification>();
         }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
@@ -53,10 +58,12 @@ namespace LWFinancial.Models
         }
 
         public DbSet<Household> Households { get; set; }
-        public DbSet<Account> Projects { get; set; }
+        public DbSet<Account> Accounts { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Budget> Budgets { get; set; }
         public DbSet<BudgetItem> BudgetItems { get; set; }
+        public DbSet<HouseholdInvitation> HouseholdInvitations { get; set; }
+        public DbSet<HouseholdNotification> HouseholdNotifications { get; set; }
 
     }
 }

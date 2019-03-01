@@ -9,11 +9,18 @@ namespace LWFinancial.Models
     public class Account
     {
         public int Id { get; set; }
-        [MaxLength(30), MinLength(3)]
+        [Required]
+        [MaxLength(30, ErrorMessage = "Please enter a max length of 30 characters."), MinLength(3, ErrorMessage = "Please enter a min length of 3 characters.")]
         public string Name { get; set; }
+        [Required]
+        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal InitialBalance { get; set; }
+        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal CurrentBalance { get; set; }
+        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal ReconciledBalance { get; set; }
+        [Required]
+        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal LowBalanceWarning { get; set; }
         public DateTime Created { get; set; }
 

@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@using LWFinancial.Models
 
 <!doctype html>
 <html class="fixed">
@@ -132,7 +133,7 @@
                                     @foreach (var item in notificationHelper.GetNewNotifications().Take(3))
                                     {
                                         <li>
-                                            <span class="title">LWBugTracker</span>
+                                            <span class="title">LWFinancial</span>
                                             <span class="message">@item.NotificationBody</span>
                                         </li>
                                     }
@@ -243,14 +244,13 @@
                     <a href="#" data-toggle="dropdown">
                         <figure class="profile-picture">
 
-                            @*@{
+                            @{
                                 var avatarPath = "";
-
+                                var db = new ApplicationDbContext();
                             }
 
                             @if (User.Identity.IsAuthenticated)
                             {
-                                var db = new ApplicationDbContext();
                                 var userId = User.Identity.GetUserId();
                                 avatarPath = db.Users.Find(userId).AvatarPath;
 
@@ -266,8 +266,7 @@
                             else
                             {
                                 <img src="~/img/!logged-user.jpg" alt="Joseph Doe" class="img-circle" data-lock-picture="~/img/!logged-user.jpg" />
-
-                            }*@
+                            }
 
                         </figure>
                         <div class="profile-info" data-lock-name="John Doe" data-lock-email="johndoe@JSOFT.com">
@@ -279,13 +278,13 @@
                                 {
                                     <b>Admin</b>
                                 }
-                                else if (HttpContext.Current.User.IsInRole("Head"))
+                                else if (HttpContext.Current.User.IsInRole("HOH"))
                                 {
                                     <b>Head of Household</b>
                                 }
-                                else if (HttpContext.Current.User.IsInRole("Delegate"))
+                                else if (HttpContext.Current.User.IsInRole("Guest"))
                                 {
-                                    <b>Delegate</b>
+                                    <b>Guest</b>
                                 }
                                 else if (HttpContext.Current.User.IsInRole("Member"))
                                 {
@@ -338,18 +337,65 @@
                         <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
                     </div>
                 </div>
-
+                @{ 
+                    var user = db.Users.Find(User.Identity.GetUserId());
+                }
                 <div class="nano">
                     <div class="nano-content">
                         <nav id="menu" class="nav-main" role="navigation">
                             <ul class="nav nav-main">
                                 <li class="nav-active">
-                                    <a href="@Url.Action("Index","Home")">
+                                    <a href="@Url.Action("Index","Households")">
                                         <i class="fa fa-home" aria-hidden="true"></i>
                                         <span>Dashboard</span>
                                     </a>
                                 </li>
-                                @if (User.IsInRole("Admin"))
+                                @if(user.HouseholdId != null)
+                                {
+                                    <li class="nav-parent">
+                                        <a>
+                                            <i class="fa fa-align-left" aria-hidden="true"></i>
+                                            <span>Household</span>
+                                        </a>
+                                        <ul class="nav nav-children">
+                                            <li>
+                                                <a href="@Url.Action("Details","Households", new { id = user.HouseholdId })">
+                                                    <i class="fa fa-dashboard" aria-hidden="true"></i>Dashboard
+                                                </a>
+                                            </li>
+                                            <li class="nav-parent">
+                                                <a>
+                                                    <i class="fa fa-align-left" aria-hidden="true"></i>
+                                                    <span>Budgets</span>
+                                                </a>
+                                                <ul class="nav nav-children">
+                                                    <li>
+                                                        <a href="@Url.Action("Index","Budgets")">
+                                                            <i class="fa fa-dashboard" aria-hidden="true"></i>Dashboard
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="@Url.Action("Index","BudgetItems")">
+                                                            <i class="fa fa-money" aria-hidden="true"></i>Budget Items
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Index","Accounts")">
+                                                    <i class="fa fa-bank" aria-hidden="true"></i>Accounts
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="@Url.Action("Index","Transactions")">
+                                                    <i class="fa fa-dollar" aria-hidden="true"></i>Transactions
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                }
+                                
+                                @*@if (User.IsInRole("Admin"))
                                 {
                                     <li>
                                         <a href="@Url.Action("Index", "Users")">
@@ -357,8 +403,8 @@
                                             <span>Assign Roles</span>
                                         </a>
                                     </li>
-                                }
-                                @if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                }*@
+                                                        @*@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
                                 {
                                     <li>
                                         <a href="@Url.Action("Index", "Projects")">
@@ -366,21 +412,21 @@
                                             <span>All Projects</span>
                                         </a>
                                     </li>
-                                }
+                                }*@
 
-                                <li>
-                                    <a href="@Url.Action("IndexMy","Projects")">
+                                                        @*<li>
+                                    <a href="@Url.Action("Index","Households")">
                                         <i class="fa fa-briefcase" aria-hidden="true"></i>
-                                        <span>My Projects</span>
+                                        <span>All Households</span>
                                     </a>
-                                </li>
+                                </li>*@
 
-                                <li>
+                                                        @*<li>
                                     <a href="@Url.Action("Index","Tickets")">
                                         <i class="fa fa-ticket" aria-hidden="true"></i>
                                         <span>Tickets</span>
                                     </a>
-                                </li>
+                                </li>*@
                             </ul>
                         </nav>
 
@@ -483,6 +529,8 @@
     <script src="~/Scripts/ios7-switch.js"></script>
     <script src="~/Scripts/pnotify.custom.js"></script>
     <script src="~/Scripts/owl.carousel.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.bootstrap.wizard.js"></script>
 
     <!-- Theme Base, Components and Settings -->
     <script src="~/Scripts/theme.js"></script>
@@ -505,6 +553,7 @@
     <script src="~/Scripts/examples.charts.js"></script>
     <script src="~/Scripts/examples.notifications.js"></script>
     <script src="~/Scripts/examples.timeline.js"></script>
+    <script src="~/Scripts/examples.wizard.js"></script>
 
     <script>$('#datatable-editable').DataTable();</script>
 

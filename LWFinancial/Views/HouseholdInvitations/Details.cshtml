@@ -1,0 +1,106 @@
+﻿@model LWFinancial.Models.HouseholdInvitation
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>HouseholdInvitation</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Household.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Household.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Recipient.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Recipient.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Sender.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Sender.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Decscription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Decscription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UniqueKey)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UniqueKey)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Created)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Created)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Accepted)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Accepted)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Expires)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Expires)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Read)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Read)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

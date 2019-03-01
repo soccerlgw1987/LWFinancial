@@ -9,11 +9,19 @@ namespace LWFinancial.Models
     public class HouseholdInvitation
     {
         public int Id { get; set; }
-        [MaxLength(20), MinLength(3)]
+        [Required]
+        [MaxLength(30, ErrorMessage = "Please enter a max length of 30 characters."), MinLength(3, ErrorMessage = "Please enter a min length of 3 characters.")]
         public string Title { get; set; }
-        [MaxLength(100), MinLength(3)]
+        [Required]
+        [MaxLength(100, ErrorMessage = "Please enter a max length of 100 characters."), MinLength(3, ErrorMessage = "Please enter a min length of 3 characters.")]
         public string Decscription { get; set; }
+        [Required]
+        public Guid UniqueKey { get; set; }
+        [Required, EmailAddress]
+        public string Email { get; set; }
         public DateTime Created { get; set; }
+        public DateTime? Accepted { get; set; }
+        public DateTime Expires { get; set; }
         public bool Read { get; set; }
 
         public int HouseholdId { get; set; }

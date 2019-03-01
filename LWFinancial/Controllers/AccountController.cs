@@ -9,6 +9,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using LWFinancial.Models;
+using System.Net.Mail;
+using LWFinancial.Helpers;
+using System.IO;
 
 namespace LWFinancial.Controllers
 {
@@ -87,6 +90,18 @@ namespace LWFinancial.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
+                    if(string.IsNullOrEmpty(returnUrl))
+                    {
+                        var userId = UserManager.FindByEmail(model.Email).Id;
+                        if(UserManager.FindById(userId).HouseholdId == null)
+                        {
+                            return RedirectToAction("Index", "Households");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Details", "Households", new { id = UserManager.FindById(userId).HouseholdId });
+                        }
+                    }
                     return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
@@ -155,23 +170,53 @@ namespace LWFinancial.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(RegisterViewModel model, HttpPostedFileBase avatar)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    DisplayName = model.DisplayName,
+                    FullName = model.FirstName + " " + model.LastName
+                };
+
+                if (FileUploadValidator.IsWebFriendlyImage(avatar))
+                {
+                    var fileName = Path.GetFileName(avatar.FileName);
+                    avatar.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    user.AvatarPath = "/Uploads/" + fileName;
+                }
+
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+
                     // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                     // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
 
-                    return RedirectToAction("Index", "Home");
+                    var body = "Please confirm your account by clicking <a href=\"" + callbackUrl + "\"> here</a>";
+
+                    var from = "LWFinancial<LWFinancial@email.com>";
+
+                    var email = new MailMessage(from, model.Email)
+                    {
+                        Subject = "Confirm your account",
+                        Body = body,
+                        IsBodyHtml = true
+                    };
+
+                    var svc = new PersonalEmail();
+                    await svc.SendAsync(email);
+
+                    return RedirectToAction("Index", "Households");
                 }
                 AddErrors(result);
             }
@@ -211,7 +256,7 @@ namespace LWFinancial.Controllers
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindByNameAsync(model.Email);
-                if (user == null || !(await UserManager.IsEmailConfirmedAsync(user.Id)))
+                if (user == null)
                 {
                     // Don't reveal that the user does not exist or is not confirmed
                     return View("ForgotPasswordConfirmation");
@@ -219,14 +264,58 @@ namespace LWFinancial.Controllers
 
                 // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
                 // Send an email with this link
-                // string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
-                // var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);		
+                string code = await UserManager.GeneratePasswordResetTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ResetPassword", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
                 // await UserManager.SendEmailAsync(user.Id, "Reset Password", "Please reset your password by clicking <a href=\"" + callbackUrl + "\">here</a>");
                 // return RedirectToAction("ForgotPasswordConfirmation", "Account");
+
+                var body = "Please reset your password by clicking <a href=\"" + callbackUrl + "\"> here</a>";
+
+                var from = "LWFinancial<LWFinancial@email.com>";
+
+                var email = new MailMessage(from, model.Email)
+                {
+                    Subject = "Reset Password",
+                    Body = body,
+                    IsBodyHtml = true
+                };
+
+                var svc = new PersonalEmail();
+                await svc.SendAsync(email);
+
+                return RedirectToAction("ForgotPasswordConfirmation", "Account");
             }
 
             // If we got this far, something failed, redisplay form
             return View(model);
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public ActionResult ResendEmailConfirmation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ResendEmailConfirmation(ForgotPasswordViewModel model)
+        {
+            var user = await UserManager.FindByNameAsync(model.Email);
+
+            if (user != null)
+            {
+                string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            }
+            return RedirectToAction("ConfirmationSent");
+        }
+
+        public ActionResult ConfirmationSent()
+        {
+            return View();
         }
 
         //
@@ -457,7 +546,7 @@ namespace LWFinancial.Controllers
             {
                 return Redirect(returnUrl);
             }
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Households");
         }
 
         internal class ChallengeResult : HttpUnauthorizedResult

@@ -174,18 +174,31 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\BudgetItemsController.cs" />
+    <Compile Include="Controllers\BudgetsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\HouseholdInvitationsController.cs" />
+    <Compile Include="Controllers\HouseholdNotificationsController.cs" />
+    <Compile Include="Controllers\HouseholdsController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\TransactionsController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Enumerations\RoleNames.cs" />
     <Compile Include="Enumerations\TransactionType.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\FileUploadValidator.cs" />
+    <Compile Include="Helpers\HouseholdsHelper.cs" />
     <Compile Include="Helpers\TransactionHelper.cs" />
+    <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Budget.cs" />
     <Compile Include="Models\BudgetItem.cs" />
+    <Compile Include="Models\EmailModel.cs" />
     <Compile Include="Models\Household.cs" />
     <Compile Include="Models\HouseholdInvitation.cs" />
     <Compile Include="Models\HouseholdNotification.cs" />
@@ -194,6 +207,7 @@
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\GuestUser.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\basic.css" />
@@ -229,6 +243,7 @@
     <Content Include="Content\theme-custom.css" />
     <Content Include="Content\theme.css" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\fontawesome-webfont.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -246,6 +261,7 @@
     <Content Include="img\back_disabled.png" />
     <Content Include="img\back_enabled.png" />
     <Content Include="img\back_enabled_hover.png" />
+    <Content Include="img\blank.gif" />
     <Content Include="img\blog-image-1.jpg" />
     <Content Include="img\blog-image-2.jpg" />
     <Content Include="img\blog-image-3.jpg" />
@@ -256,10 +272,32 @@
     <Content Include="img\bootstrap-colorpicker\saturation.png" />
     <Content Include="img\collection.png" />
     <Content Include="img\collection_hover.png" />
+    <Content Include="img\colorpicker_background.png" />
+    <Content Include="img\colorpicker_hex.png" />
+    <Content Include="img\colorpicker_hsb_b.png" />
+    <Content Include="img\colorpicker_hsb_h.png" />
+    <Content Include="img\colorpicker_hsb_s.png" />
+    <Content Include="img\colorpicker_indic.gif" />
+    <Content Include="img\colorpicker_overlay.png" />
+    <Content Include="img\colorpicker_rgb_b.png" />
+    <Content Include="img\colorpicker_rgb_g.png" />
+    <Content Include="img\colorpicker_rgb_r.png" />
+    <Content Include="img\colorpicker_select.gif" />
+    <Content Include="img\colorpicker_submit.png" />
     <Content Include="img\copy.png" />
     <Content Include="img\copy_hover.png" />
     <Content Include="img\csv.png" />
     <Content Include="img\csv_hover.png" />
+    <Content Include="img\custom_background.png" />
+    <Content Include="img\custom_hex.png" />
+    <Content Include="img\custom_hsb_b.png" />
+    <Content Include="img\custom_hsb_h.png" />
+    <Content Include="img\custom_hsb_s.png" />
+    <Content Include="img\custom_indic.gif" />
+    <Content Include="img\custom_rgb_b.png" />
+    <Content Include="img\custom_rgb_g.png" />
+    <Content Include="img\custom_rgb_r.png" />
+    <Content Include="img\custom_submit.png" />
     <Content Include="img\device.png" />
     <Content Include="img\favicon.ico" />
     <Content Include="img\forward_disabled.png" />
@@ -309,6 +347,9 @@
     <Content Include="img\projects\project-6.jpg" />
     <Content Include="img\projects\project-7.jpg" />
     <Content Include="img\projects\project.jpg" />
+    <Content Include="img\select.png" />
+    <Content Include="img\select2.png" />
+    <Content Include="img\slider.png" />
     <Content Include="img\sort_asc.png" />
     <Content Include="img\sort_asc_disabled.png" />
     <Content Include="img\sort_both.png" />
@@ -347,6 +388,11 @@
     <Content Include="img\patterns\Thumbs.db" />
     <Content Include="img\projects\Thumbs.db" />
     <Content Include="img\Thumbs.db" />
+    <Content Include="fonts\fontawesome-webfont.eot" />
+    <Content Include="fonts\fontawesome-webfont.ttf" />
+    <Content Include="fonts\fontawesome-webfont.woff" />
+    <Content Include="fonts\FontAwesome.otf" />
+    <Content Include="Private.config" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\codemirror.js" />
     <Content Include="Scripts\css.js" />
@@ -366,6 +412,7 @@
     <Content Include="Scripts\examples.notifications.js" />
     <Content Include="Scripts\examples.timeline.js" />
     <Content Include="Scripts\examples.widgets.js" />
+    <Content Include="Scripts\examples.wizard.js" />
     <Content Include="Scripts\gauge.js" />
     <Content Include="Scripts\htmlmixed.js" />
     <Content Include="Scripts\ios7-switch.js" />
@@ -377,6 +424,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.custom.js" />
     <Content Include="Scripts\jquery.appear.js" />
+    <Content Include="Scripts\jquery.bootstrap.wizard.js" />
     <Content Include="Scripts\jquery.browser.mobile.js" />
     <Content Include="Scripts\jquery.dataTables.js" />
     <Content Include="Scripts\jquery.dataTables.min.js" />
@@ -425,6 +473,10 @@
     <Content Include="Scripts\theme.js" />
     <Content Include="Scripts\to-markdown.js" />
     <Content Include="Scripts\xml.js" />
+    <Content Include="Uploads\adminHead.png" />
+    <Content Include="Uploads\devHead.jpg" />
+    <Content Include="Uploads\HeadPic.jpg" />
+    <Content Include="Uploads\pmHead.png" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -460,10 +512,58 @@
     <Content Include="Views\Shared\Lockout.cshtml" />
     <Content Include="Views\Shared\_LoginPartial.cshtml" />
     <Content Include="Views\Account\Landing.cshtml" />
+    <Content Include="Views\Budgets\Create.cshtml" />
+    <Content Include="Views\Budgets\Delete.cshtml" />
+    <Content Include="Views\Budgets\Details.cshtml" />
+    <Content Include="Views\Budgets\Edit.cshtml" />
+    <Content Include="Views\Budgets\Index.cshtml" />
+    <Content Include="Views\Accounts\Create.cshtml" />
+    <Content Include="Views\Accounts\Delete.cshtml" />
+    <Content Include="Views\Accounts\Details.cshtml" />
+    <Content Include="Views\Accounts\Edit.cshtml" />
+    <Content Include="Views\Accounts\Index.cshtml" />
+    <Content Include="Views\BudgetItems\Create.cshtml" />
+    <Content Include="Views\BudgetItems\Delete.cshtml" />
+    <Content Include="Views\BudgetItems\Details.cshtml" />
+    <Content Include="Views\BudgetItems\Edit.cshtml" />
+    <Content Include="Views\BudgetItems\Index.cshtml" />
+    <Content Include="Views\Households\Create.cshtml" />
+    <Content Include="Views\Households\Delete.cshtml" />
+    <Content Include="Views\Households\Details.cshtml" />
+    <Content Include="Views\Households\Edit.cshtml" />
+    <Content Include="Views\Households\Index.cshtml" />
+    <Content Include="Views\Transactions\Create.cshtml" />
+    <Content Include="Views\Transactions\Delete.cshtml" />
+    <Content Include="Views\Transactions\Details.cshtml" />
+    <Content Include="Views\Transactions\Edit.cshtml" />
+    <Content Include="Views\Transactions\Index.cshtml" />
+    <Content Include="Views\HouseholdInvitations\Create.cshtml" />
+    <Content Include="Views\HouseholdInvitations\Delete.cshtml" />
+    <Content Include="Views\HouseholdInvitations\Details.cshtml" />
+    <Content Include="Views\HouseholdInvitations\Edit.cshtml" />
+    <Content Include="Views\HouseholdInvitations\Index.cshtml" />
+    <Content Include="Views\HouseholdNotifications\Create.cshtml" />
+    <Content Include="Views\HouseholdNotifications\Delete.cshtml" />
+    <Content Include="Views\HouseholdNotifications\Details.cshtml" />
+    <Content Include="Views\HouseholdNotifications\Edit.cshtml" />
+    <Content Include="Views\HouseholdNotifications\Index.cshtml" />
+    <Content Include="Views\Account\ResendEmailConfirmation.cshtml" />
+    <Content Include="Views\Account\ConfirmationSent.cshtml" />
+    <Content Include="Views\Users\Index.cshtml" />
+    <Content Include="Views\Users\Details.cshtml" />
+    <Content Include="Views\Users\Create.cshtml" />
+    <Content Include="Views\Users\Edit.cshtml" />
+    <Content Include="Views\Users\EditMy.cshtml" />
+    <Content Include="Views\Users\Delete.cshtml" />
+    <Content Include="Views\Users\Profile.cshtml" />
+    <Content Include="Views\Home\TheLobby.cshtml" />
+    <Content Include="Views\Home\InvalidAttempt.cshtml" />
+    <Content Include="Views\Households\Dashboard.cshtml" />
+    <Content Include="Views\Households\PrepareInvitation.cshtml" />
+    <Content Include="Views\HouseholdInvitations\AcceptInvite.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Uploads\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

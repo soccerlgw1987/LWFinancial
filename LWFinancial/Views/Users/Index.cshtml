@@ -1,0 +1,79 @@
+﻿
+@model IEnumerable<LWFinancial.Models.ApplicationUser>
+@using LWFinancial.Helpers
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Assign Role</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Households")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+                <li><span>Assign Role</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+
+    <section class="panel">
+        <header class="panel-heading">
+            <div class="panel-actions">
+                <a href="#" class="fa fa-caret-down"></a>
+                @*<a href="#" class="fa fa-times"></a>*@
+            </div>
+
+            <h2 class="panel-title">Users</h2>
+        </header>
+        <div class="panel-body">
+            <div class="table-responsive">
+                <table class="table table-hover mb-none">
+                    <thead>
+                        <tr>
+                            <th>@Html.DisplayName("Full Name")</th>
+                            <th>@Html.DisplayName("Display Name")</th>
+                            <th>@Html.DisplayNameFor(model => model.Email)</th>
+                            <th>@Html.DisplayName("Role")</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @foreach (var item in Model)
+                        {
+
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.FirstName) @Html.DisplayFor(modelItem => item.LastName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DisplayName)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>
+                                    @{
+                                        var roleHelper = new UserRolesHelper();
+                                        var role = roleHelper.ListUserRoles(item.Id);
+                                    }
+                                    @role.FirstOrDefault()
+                                </td>
+                                <td class="actions-hover actions-fade">
+                                    <a class="fa fa-pencil">@Html.ActionLink("Edit", "Edit", new { id = item.Id })</a>
+                                    @*<a href="" class="delete-row"><i class="fa fa-trash-o"></i></a>*@
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <!-- end: page -->
+</section>

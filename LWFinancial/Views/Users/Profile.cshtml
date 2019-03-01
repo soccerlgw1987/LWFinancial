@@ -1,0 +1,157 @@
+﻿
+@using LWFinancial.Models
+@using Microsoft.AspNet.Identity
+@model LWFinancial.Models.ChangePasswordViewModel
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>My Profile</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Households")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+                <li><span>My Profile</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+
+    <div class="row">
+        <div class="col-md-4 col-lg-3">
+
+            <section class="panel">
+                <div class="panel-body">
+                    <div class="thumb-info mb-md">
+
+                        @{
+                            var avatarPath = "";
+
+                        }
+
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            var db = new ApplicationDbContext();
+                            var userId = User.Identity.GetUserId();
+                            avatarPath = db.Users.Find(userId).AvatarPath;
+
+                            if (avatarPath == null)
+                            {
+                                avatarPath = "~/img/!logged-user.jpg";
+                            }
+                        }
+                        else
+                        {
+                            avatarPath = "/img/!logged-user.jpg";
+
+                        }
+                        <img src="@avatarPath" alt="" class="rounded img-responsive" />
+                    </div>
+                </div>
+            </section>
+            <br />
+            <br />
+            <br />
+            <div class="thumb-info-title">
+                <span class="thumb-info-inner">@User.Identity.Name</span>
+                <span class="thumb-info-type">
+                    @if (HttpContext.Current.User.IsInRole("Admin"))
+                    {
+                        <b>Admin</b>
+                    }
+                    else if (HttpContext.Current.User.IsInRole("Project Manager"))
+                    {
+                        <b>Project Manager</b>
+                    }
+                    else if (HttpContext.Current.User.IsInRole("Developer"))
+                    {
+                        <b>Developer</b>
+                    }
+                    else if (HttpContext.Current.User.IsInRole("Submitter"))
+                    {
+                        <b>Submitter</b>
+                    }
+                    else
+                    {
+                        <b>No assigned role</b>
+                    }
+                </span>
+            </div>
+
+        </div>
+        <div class="col-md-8 col-lg-6">
+            <div class="tabs">
+                <ul class="nav nav-tabs tabs-primary">
+                    <li class="active">
+                        <a href="#overview" data-toggle="tab">Edit Info</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div id="overview" class="tab-pane active">
+                        @using (Html.BeginForm("EditMy", "Users", FormMethod.Post, new { @class = "form-horizontal", @method = "post" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <h4 class="mb-xlg">Personal Information</h4>
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-12 control-label" style="text-align: center" for="profileAddress"><a href="@Url.Action("EditMy","Users", new { id = User.Identity.GetUserId() })">Click here</a> to edit personal information!</label>
+                                </div>
+                            </fieldset>
+                            <br />
+                        }
+
+                        <hr class="dotted tall">
+
+                        @using (Html.BeginForm("ChangePassword", "Manage", FormMethod.Post, new { @class = "form-horizontal", @method = "get" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary("", new { @class = "text-danger" })
+                            <h4 class="mb-xlg">Change Password</h4>
+                            <fieldset class="mb-xl">
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="profileNewPassword">Old Password</label>
+                                    <div class="col-md-8">
+                                        @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control", @id = "profileNewPassword" })
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="profileNewPassword">New Password</label>
+                                    <div class="col-md-8">
+                                        @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", @id = "profileNewPassword" })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label" for="profileNewPasswordRepeat">Confirm New Password</label>
+                                    <div class="col-md-8">
+                                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @id = "profileNewPasswordRepeat" })
+                                    </div>
+                                </div>
+                            </fieldset>
+
+                            <div class="row">
+                                <div class="col-md-9 col-md-offset-3">
+                                    <button type="submit" class="btn btn-primary">Save</button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <!-- end: page -->
+</section>
