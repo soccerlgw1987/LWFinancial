@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
 @using LWFinancial.Models
+@using LWFinancial.Enumerations
 
 <!doctype html>
 <html class="fixed">
@@ -274,19 +275,19 @@
                                 @User.Identity.GetUserName()
                             </span>
                             <span class="role">
-                                @if (HttpContext.Current.User.IsInRole("Admin"))
+                                @if (User.IsInRole(RoleNames.Admin.ToString()))
                                 {
                                     <b>Admin</b>
                                 }
-                                else if (HttpContext.Current.User.IsInRole("HOH"))
+                                else if (User.IsInRole(RoleNames.HOH.ToString()))
                                 {
                                     <b>Head of Household</b>
                                 }
-                                else if (HttpContext.Current.User.IsInRole("Guest"))
+                                else if (User.IsInRole(RoleNames.Guest.ToString()))
                                 {
                                     <b>Guest</b>
                                 }
-                                else if (HttpContext.Current.User.IsInRole("Member"))
+                                else if (User.IsInRole(RoleNames.Member.ToString()))
                                 {
                                     <b>Member</b>
                                 }
@@ -554,6 +555,7 @@
     <script src="~/Scripts/examples.notifications.js"></script>
     <script src="~/Scripts/examples.timeline.js"></script>
     <script src="~/Scripts/examples.wizard.js"></script>
+    <script src="~/Scripts/examples.modals.js"></script>
 
     <script>$('#datatable-editable').DataTable();</script>
 

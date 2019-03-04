@@ -11,6 +11,7 @@ using Microsoft.Owin.Security;
 using LWFinancial.Models;
 using System.Net.Mail;
 using LWFinancial.Helpers;
+using LWFinancial.Enumerations;
 using System.IO;
 
 namespace LWFinancial.Controllers
@@ -20,6 +21,7 @@ namespace LWFinancial.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private UserRolesHelper roleHelper = new UserRolesHelper();
 
         public AccountController()
         {
@@ -192,6 +194,9 @@ namespace LWFinancial.Controllers
                 }
 
                 var result = await UserManager.CreateAsync(user, model.Password);
+
+                roleHelper.AddUserToRole(user.Id, RoleNames.Guest);
+
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);

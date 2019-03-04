@@ -8,7 +8,9 @@ using System.Net.Mail;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using LWFinancial.Enumerations;
 using LWFinancial.Models;
+using LWFinancial.Helpers;
 using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
@@ -16,6 +18,7 @@ namespace LWFinancial.Controllers
     public class HouseholdInvitationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private HouseholdsHelper houseHoldHelper = new HouseholdsHelper();
 
         // GET: HouseholdInvitations
         public ActionResult Index()
@@ -89,7 +92,7 @@ namespace LWFinancial.Controllers
             db.HouseholdInvitations.Add(invitation);
             db.SaveChanges();
 
-            var callbackUrl = Url.Action("AcceptInvite", "HouseholdInvitations", new { email = invitation.Email, keycode = invitation.UniqueKey }, protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("AcceptInvite", "HouseholdInvitations", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
             var acceptLink = "You can accept your invitation by clicking <a href=\"" + callbackUrl + "\">here</a>";
 
             var from = "LWFinancial <LWFinancial@mailinator.com>";
@@ -103,12 +106,20 @@ namespace LWFinancial.Controllers
             var svc = new PersonalEmail();
             await svc.SendAsync(emailMessage);
 
-            return RedirectToAction("Details", new { id = invitation.HouseholdId});
+            return RedirectToAction("Details", "Households", new { id = invitation.HouseholdId});
         }
 
-        public ActionResult AcceptInvite(string email, string keycode)
+        [Authorize]
+        public ActionResult AcceptInvite(string email, string keycode, int householdId)
         {
-            return View();
+            if (houseHoldHelper.IsUserInHousehold(User.Identity.GetUserId(), householdId))
+            {
+                return RedirectToAction("InvalidAttempt", "Home");
+            } 
+
+            HouseholdInvitation householdInvitation = db.HouseholdInvitations.Find(householdId);
+
+            return View(householdInvitation);
         }
 
         public ActionResult AcceptRegister(string houseHoldId)

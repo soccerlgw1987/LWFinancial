@@ -27,7 +27,48 @@
     </header>
 
     <!-- start: page -->
+    <div class="row">
+        <div class="col-md-offset-10">
+            <a class="mb-xs mt-xs mr-xs modal-basic btn btn-danger" href="#modalHeaderColorDanger">Leave Household</a>
+            <div id="modalHeaderColorDanger" class="modal-block modal-header-color modal-block-danger mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">WARNING!</h2>
+                    </header>
+                    <div class="panel-body">
+                        <div class="modal-wrapper">
+                            <div class="modal-icon">
+                                <i class="fa fa-times-circle"></i>
+                            </div>
+                            <div class="modal-text">
+                                <p>You are about to leave this Household. Are you sure you would like to do this?</p>
+                                @if (User.IsInRole(RoleNames.HOH.ToString()))
+                                {
+                                    <br />
+                                    <p>If you leave, the household will be deleted.</p>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    @using (Html.BeginForm("Leave", "Households", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.Hidden("userId", User.Identity.GetUserId())
+                        @Html.Hidden("householdId", Model.Id)
 
+                        <footer class="panel-footer">
+                            <div class="row">
+                                <div class="col-md-12 text-right">
+                                    <input type="submit" value="OK" class="btn btn-danger" />
+                                    <input type="submit" value="Cancel" class="btn btn-default modal-dismiss" />
+                                </div>
+                            </div>
+                        </footer>
+                    }
+                </section>
+            </div>
+        </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <h2 class="name text-semibold" style="text-align:center">Welcome to @Model.Name Dashboard</h2>
@@ -94,6 +135,7 @@
         </div>
         <div class="col-md-6">
             <!-- Budget Graph -->
+
             <!-- Transaction Graph -->
 
         </div>
@@ -102,6 +144,60 @@
     <!-- Member List -->
     <div class="row">
         <h2 class="name text-semibold" style="text-align:center">Member List</h2>
+
+        @if (User.IsInRole(RoleNames.HOH.ToString()))
+        {
+            <div class="row">
+                <div class="col-md-6" style="padding-left:30px">
+                    <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary btn-lg" href="#inviteModal">Invite Members</a>
+                </div>
+            </div>
+
+            <div id="inviteModal" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
+                <section class="panel">
+                    <header class="panel-heading">
+                        <h2 class="panel-title">Create an invitation to join @Model.Name</h2>
+                    </header>
+                    <div class="panel-body">
+                        @if (User.IsInRole(RoleNames.HOH.ToString()))
+                        {
+                            using (Html.BeginForm("Create", "HouseholdInvitations", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Email</label>
+                                    <div class="col-sm-9">
+                                        @Html.Editor("Email", new { htmlAttributes = new { @class = "form-control", placeholder = "Type recipient email..." } })
+                                    </div>
+                                </div>
+                                <div class="form-group mt-lg">
+                                    <label class="col-sm-3 control-label">Subject</label>
+                                    <div class="col-sm-9">
+                                        @Html.Editor("Subject", new { htmlAttributes = new { @class = "form-control", placeholder = "Type the subject..." } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-sm-3 control-label">Message</label>
+                                    <div class="col-sm-9">
+                                        <textarea rows="5" name="Body" class="form-control" placeholder="Type your message..."></textarea>
+                                    </div>
+                                </div>
+                                <footer class="panel-footer">
+                                    <div class="row">
+                                        <div class="col-md-12 text-right">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                            <input type="submit" value="Cancel" class="btn btn-default modal-dismiss" />
+                                        </div>
+                                    </div>
+                                </footer>
+                            }
+                        }
+                    </div>
+                </section>
+            </div>
+        }
+        <br />
+
         @foreach (var user in householdsHelper.UsersInHousehold(Model.Id))
         {
             <div class="col-md-6">
@@ -136,67 +232,7 @@
         }
     </div>
 
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#inviteModal">Open Modal</button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="inviteModal" role="dialog">
-        <div class="modal-dialog">
-
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Creating an invitation for @Model.Name</h4>
-                </div>
-                <div class="modal-body">
-                    @if (User.IsInRole(RoleNames.HOH.ToString()))
-                    {
-                        using (Html.BeginForm("Create", "HouseholdInvitations", FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
-
-                            <div class="form-horizontal">
-                                <h4>HouseholdInvitation</h4>
-                                <hr />
-                                <div class="form-group">
-                                    @Html.Label("Subject", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.Editor("Subject", new { htmlAttributes = new { @class = "form-control" } })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.Label("Body", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.TextArea("Body", new { htmlAttributes = new { @class = "form-control" } })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    @Html.Label("Email", htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.Editor("Email", new { htmlAttributes = new { @class = "form-control" } })
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <div class="col-md-offset-2 col-md-10">
-                                        <input type="submit" value="Create" class="btn btn-default" />
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    }
-
-
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                </div>
-            </div>
-
-        </div>
-    </div>
+    
     <!-- end: page -->
 
 </section>

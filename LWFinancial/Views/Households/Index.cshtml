@@ -25,6 +25,7 @@
     @{
         var db = new ApplicationDbContext();
         var user = db.Users.Find(User.Identity.GetUserId());
+        var houseHelper = new HouseholdsHelper();
     }
 
     @if (user.HouseholdId == null)
@@ -35,25 +36,13 @@
     }
 
     <div class="row">
-        @{
-            var userId = User.Identity.GetUserId();
-            var avatarPath = db.Users.Find(userId).AvatarPath;
-        }
         @foreach (var item in Model)
         {
             <div class="col-md-6">
                 <section class="panel">
                     <header class="panel-heading bg-primary">
                         <div class="panel-heading-icon">
-                            @if (avatarPath == null)
-                            {
-                                <img src="~/img/ui-bg_diagonals-thick_20_666666_40x40.png" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
-                            }
-                            else
-                            {
-                                <img src="@avatarPath" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
-                            }
-                            @*<i class="fa fa-briefcase"></i>*@
+                            <img src="@item.AvatarPath" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
                         </div>
                     </header>
                     <div class="panel-body text-center">

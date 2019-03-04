@@ -18,6 +18,7 @@ namespace LWFinancial.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private UserRolesHelper roleHelper = new UserRolesHelper();
+        private HouseholdsHelper houseHelper = new HouseholdsHelper();
 
         // GET: Households
         public ActionResult Index()
@@ -62,6 +63,41 @@ namespace LWFinancial.Controllers
             return View(household);
         }
 
+        // Post: Households/Leave/
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Leave(string userId, int householdId)
+        {
+            if (User.IsInRole(RoleNames.HOH.ToString()))
+            {
+                foreach (var item in houseHelper.UsersInHousehold(householdId))
+                {
+                    houseHelper.RemoveUserFromHousehold(item.Id, householdId);
+                    if(roleHelper.IsUserInRole(item.Id, RoleNames.HOH.ToString()))
+                    {
+                        roleHelper.RemoveUserFromRole(item.Id, RoleNames.HOH.ToString());
+                    }
+                    else
+                    {
+                        roleHelper.RemoveUserFromRole(item.Id, RoleNames.Member.ToString());
+                    }
+                    roleHelper.AddUserToRole(item.Id, RoleNames.Guest);
+                }
+                Household household = db.Households.Find(householdId);
+                db.Households.Remove(household);
+                db.SaveChanges();
+            }
+            else
+            {
+                houseHelper.RemoveUserFromHousehold(userId, householdId);
+                roleHelper.RemoveUserFromRole(userId, RoleNames.Member.ToString());
+                roleHelper.AddUserToRole(userId, RoleNames.Guest);
+                db.SaveChanges();
+            }
+
+            return RedirectToAction("Index", "Households");
+        }
+
         // GET: Households/Create
         public ActionResult Create()
         {
@@ -98,6 +134,25 @@ namespace LWFinancial.Controllers
                 var user = db.Users.Find(userId);
                 user.HouseholdId = household.Id;
                 roleHelper.AddUserToRole(userId, RoleNames.HOH);
+
+                db.SaveChanges();
+
+                return RedirectToAction("Details", "Households", new { id = user.HouseholdId });
+            }
+
+            return View(household);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Accept([Bind(Include = "Id,Name,Decscription,AvatarPath,IncomeAmount,Created,Updated")] Household household)
+        {
+            if (ModelState.IsValid)
+            {
+                var userId = User.Identity.GetUserId();
+                var user = db.Users.Find(userId);
+                user.HouseholdId = household.Id;
+                roleHelper.AddUserToRole(userId, RoleNames.Member);
 
                 db.SaveChanges();
 
@@ -164,12 +219,28 @@ namespace LWFinancial.Controllers
         // POST: Households/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(string userId, int householdId)
         {
-            Household household = db.Households.Find(id);
+            if (User.IsInRole(RoleNames.HOH.ToString()))
+            {
+                foreach (var item in houseHelper.UsersInHousehold(householdId))
+                {
+                    houseHelper.RemoveUserFromHousehold(item.Id, householdId);
+                    roleHelper.RemoveUserFromRole(item.Id, RoleNames.Member.ToString());
+                    roleHelper.AddUserToRole(item.Id, RoleNames.Guest);
+                }
+            }
+            else
+            {
+                houseHelper.RemoveUserFromHousehold(userId, householdId);
+                roleHelper.RemoveUserFromRole(userId, RoleNames.Member.ToString());
+                roleHelper.AddUserToRole(userId, RoleNames.Guest);
+            }
+
+            Household household = db.Households.Find(householdId);
             db.Households.Remove(household);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Households");
         }
 
         protected override void Dispose(bool disposing)

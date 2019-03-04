@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            @using (Html.BeginForm())
+            @using (Html.BeginForm("Create","Households",FormMethod.Post, new { enctype = "Multipart/form-data"}))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(model => model.Created)
