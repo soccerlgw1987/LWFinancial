@@ -564,6 +564,7 @@
     <Content Include="Views\Households\Dashboard.cshtml" />
     <Content Include="Views\Households\PrepareInvitation.cshtml" />
     <Content Include="Views\HouseholdInvitations\AcceptInvite.cshtml" />
+    <Content Include="Views\Households\AcceptInvite.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

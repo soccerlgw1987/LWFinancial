@@ -47,6 +47,17 @@ namespace LWFinancial.Controllers
             return RedirectToAction("Details", "Households", new { id = houseId });
         }
 
+        [Authorize]
+        public ActionResult AcceptInvite(string email, string keycode, int householdId)
+        {
+            if (houseHelper.IsUserInHousehold(User.Identity.GetUserId(), householdId))
+            {
+                return RedirectToAction("InvalidAttempt", "Home");
+            }
+
+            Household household = db.Households.Find(householdId);
+            return View(household);
+        }
 
         // GET: Households/Details/5
         public ActionResult Details(int? id)
@@ -68,9 +79,11 @@ namespace LWFinancial.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Leave(string userId, int householdId)
         {
+            Household household = db.Households.Find(householdId);
+
             if (User.IsInRole(RoleNames.HOH.ToString()))
             {
-                foreach (var item in houseHelper.UsersInHousehold(householdId))
+                foreach (var item in household.ApplicationUsers)
                 {
                     houseHelper.RemoveUserFromHousehold(item.Id, householdId);
                     if(roleHelper.IsUserInRole(item.Id, RoleNames.HOH.ToString()))
@@ -83,7 +96,7 @@ namespace LWFinancial.Controllers
                     }
                     roleHelper.AddUserToRole(item.Id, RoleNames.Guest);
                 }
-                Household household = db.Households.Find(householdId);
+                
                 db.Households.Remove(household);
                 db.SaveChanges();
             }
@@ -133,6 +146,7 @@ namespace LWFinancial.Controllers
                 var userId = User.Identity.GetUserId();
                 var user = db.Users.Find(userId);
                 user.HouseholdId = household.Id;
+                roleHelper.RemoveUserFromRole(userId, RoleNames.Guest.ToString());
                 roleHelper.AddUserToRole(userId, RoleNames.HOH);
 
                 db.SaveChanges();
@@ -152,6 +166,7 @@ namespace LWFinancial.Controllers
                 var userId = User.Identity.GetUserId();
                 var user = db.Users.Find(userId);
                 user.HouseholdId = household.Id;
+                roleHelper.RemoveUserFromRole(userId, RoleNames.Guest.ToString());
                 roleHelper.AddUserToRole(userId, RoleNames.Member);
 
                 db.SaveChanges();

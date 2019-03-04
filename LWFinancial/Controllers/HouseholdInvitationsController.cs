@@ -92,7 +92,7 @@ namespace LWFinancial.Controllers
             db.HouseholdInvitations.Add(invitation);
             db.SaveChanges();
 
-            var callbackUrl = Url.Action("AcceptInvite", "HouseholdInvitations", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
+            var callbackUrl = Url.Action("AcceptInvite", "Households", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
             var acceptLink = "You can accept your invitation by clicking <a href=\"" + callbackUrl + "\">here</a>";
 
             var from = "LWFinancial <LWFinancial@mailinator.com>";
@@ -118,8 +118,8 @@ namespace LWFinancial.Controllers
             } 
 
             HouseholdInvitation householdInvitation = db.HouseholdInvitations.Find(householdId);
-
-            return View(householdInvitation);
+            var test = householdInvitation.Household;
+            return View(householdInvitation.Household);
         }
 
         public ActionResult AcceptRegister(string houseHoldId)
