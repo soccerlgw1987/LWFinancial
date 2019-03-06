@@ -13,6 +13,7 @@ namespace LWFinancial.Helpers
     {
         private UserManager<ApplicationUser> userManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
         private ApplicationDbContext db = new ApplicationDbContext();
+        private ApplicationUser user = new ApplicationUser();
 
         public bool IsUserInRole(string userId, string roleName)
         {
@@ -23,6 +24,20 @@ namespace LWFinancial.Helpers
         {
             return userManager.GetRoles(userId);
         }
+
+        //public string FindUser(string email)
+        //{
+        //    foreach(var item in db.Users)
+        //    {
+        //        if(item.ToString() == email)
+        //        {
+        //            var emailResult = email;
+        //            return emailResult;
+        //        }
+        //    }
+        //    var answer = "nope";
+        //    return answer;
+        //}
 
         public bool AddUserToRole(string userId, RoleNames roleName)
         {

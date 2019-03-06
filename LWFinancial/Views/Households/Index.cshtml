@@ -6,7 +6,7 @@
 <section role="main" class="content-body">
     <header class="page-header">
         <h2>All Households</h2>
-
+        
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
                 <li>
@@ -27,6 +27,14 @@
         var user = db.Users.Find(User.Identity.GetUserId());
         var houseHelper = new HouseholdsHelper();
     }
+
+    <div class="row">
+        <div class="col-md-12">
+            <h2 class="name text-semibold" style="text-align:center">Welcome to LWFinancial!</h2>
+            <br />
+            <h4 class="name text-semibold" style="text-align:center">Feel free to request to join a current Household or you can Create a new one!</h4>
+        </div>
+    </div>
 
     @if (user.HouseholdId == null)
     {

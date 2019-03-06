@@ -5,6 +5,7 @@ using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using LWFinancial.Enumerations;
@@ -77,7 +78,7 @@ namespace LWFinancial.Controllers
         // Post: Households/Leave/
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Leave(string userId, int householdId)
+        public async Task<ActionResult> LeaveAsync(string userId, int householdId)
         {
             Household household = db.Households.Find(householdId);
 
@@ -96,7 +97,9 @@ namespace LWFinancial.Controllers
                     }
                     roleHelper.AddUserToRole(item.Id, RoleNames.Guest);
                 }
-                
+
+                await AuthorizationHelper.ReauthorizeUserAsync(userId);
+
                 db.Households.Remove(household);
                 db.SaveChanges();
             }
@@ -105,6 +108,8 @@ namespace LWFinancial.Controllers
                 houseHelper.RemoveUserFromHousehold(userId, householdId);
                 roleHelper.RemoveUserFromRole(userId, RoleNames.Member.ToString());
                 roleHelper.AddUserToRole(userId, RoleNames.Guest);
+
+                await AuthorizationHelper.ReauthorizeUserAsync(userId);
                 db.SaveChanges();
             }
 
@@ -129,7 +134,7 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Decscription,AvatarPath,IncomeAmount")] Household household, HttpPostedFileBase image)
+        public async Task<ActionResult> CreateAsnyc([Bind(Include = "Id,Name,Decscription,AvatarPath,IncomeAmount")] Household household, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
@@ -149,6 +154,8 @@ namespace LWFinancial.Controllers
                 roleHelper.RemoveUserFromRole(userId, RoleNames.Guest.ToString());
                 roleHelper.AddUserToRole(userId, RoleNames.HOH);
 
+                await AuthorizationHelper.ReauthorizeUserAsync(userId);
+
                 db.SaveChanges();
 
                 return RedirectToAction("Details", "Households", new { id = user.HouseholdId });
@@ -159,17 +166,19 @@ namespace LWFinancial.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Accept([Bind(Include = "Id,Name,Decscription,AvatarPath,IncomeAmount,Created,Updated")] Household household)
+        public async Task<ActionResult> AcceptAsync([Bind(Include = "Id,Name,Decscription,AvatarPath,IncomeAmount,Created,Updated")] Household household)
         {
             if (ModelState.IsValid)
             {
                 var userId = User.Identity.GetUserId();
                 var user = db.Users.Find(userId);
                 user.HouseholdId = household.Id;
+                db.SaveChanges();
+
                 roleHelper.RemoveUserFromRole(userId, RoleNames.Guest.ToString());
                 roleHelper.AddUserToRole(userId, RoleNames.Member);
 
-                db.SaveChanges();
+                await AuthorizationHelper.ReauthorizeUserAsync(userId);
 
                 return RedirectToAction("Details", "Households", new { id = user.HouseholdId });
             }

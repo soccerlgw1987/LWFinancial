@@ -1,8 +1,5 @@
 ﻿@model LWFinancial.Models.Household
 
-
-
-
 <section role="main" class="content-body">
     <header class="page-header">
         <h2>Create New Household</h2>
@@ -42,7 +39,7 @@
                     </div>
                 </div>
             </div>
-            @using (Html.BeginForm("Create","Households",FormMethod.Post, new { enctype = "Multipart/form-data"}))
+            @using (Html.BeginForm("CreateAsnyc", "Households",FormMethod.Post, new { enctype = "Multipart/form-data"}))
             {
                 @Html.AntiForgeryToken()
                 @Html.HiddenFor(model => model.Created)

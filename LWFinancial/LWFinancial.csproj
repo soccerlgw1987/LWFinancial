@@ -189,12 +189,16 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AccountEditHelper.cs" />
+    <Compile Include="Helpers\AccountHelper.cs" />
+    <Compile Include="Helpers\AuthorizationHelper.cs" />
     <Compile Include="Helpers\FileUploadValidator.cs" />
     <Compile Include="Helpers\HouseholdsHelper.cs" />
     <Compile Include="Helpers\TransactionHelper.cs" />
     <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\Account.cs" />
+    <Compile Include="Models\AccountEdit.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Budget.cs" />
     <Compile Include="Models\BudgetItem.cs" />
@@ -203,6 +207,7 @@
     <Compile Include="Models\HouseholdInvitation.cs" />
     <Compile Include="Models\HouseholdNotification.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\InviteRegisterViewModel.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\Transaction.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -348,6 +353,7 @@
     <Content Include="img\projects\project-7.jpg" />
     <Content Include="img\projects\project.jpg" />
     <Content Include="img\select.png" />
+    <Content Include="img\select2-spinner.gif" />
     <Content Include="img\select2.png" />
     <Content Include="img\slider.png" />
     <Content Include="img\sort_asc.png" />
@@ -480,6 +486,7 @@
     <Content Include="Uploads\HeadPic.jpg" />
     <Content Include="Uploads\pmHead.png" />
     <Content Include="Uploads\subHead.png" />
+    <Content Include="Uploads\Yijing.JPG" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -565,6 +572,10 @@
     <Content Include="Views\Households\PrepareInvitation.cshtml" />
     <Content Include="Views\HouseholdInvitations\AcceptInvite.cshtml" />
     <Content Include="Views\Households\AcceptInvite.cshtml" />
+    <Content Include="Views\Account\RegisterNew.cshtml" />
+    <Content Include="Views\Accounts\IndexMy.cshtml" />
+    <Content Include="Views\Shared\_AccountTable.cshtml" />
+    <Content Include="Views\Shared\_AccountEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

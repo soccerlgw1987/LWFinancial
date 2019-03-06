@@ -50,7 +50,7 @@
                             </div>
                         </div>
                     </div>
-                    @using (Html.BeginForm("Leave", "Households", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                    @using (Html.BeginForm("LeaveAsync", "Households", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
                     {
                         @Html.AntiForgeryToken()
                         @Html.Hidden("userId", User.Identity.GetUserId())

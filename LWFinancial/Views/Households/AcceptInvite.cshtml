@@ -43,7 +43,7 @@
         </div>
     </div>
     <div class="row">
-        @using (Html.BeginForm("Accept", "Households", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+        @using (Html.BeginForm("AcceptAsync", "Households", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
         {
             @Html.AntiForgeryToken()
             @Html.HiddenFor(model => model.Id)

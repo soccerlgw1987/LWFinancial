@@ -15,10 +15,8 @@ namespace LWFinancial.Models
         [Required]
         [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal InitialBalance { get; set; }
-        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal CurrentBalance { get; set; }
-        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
-        public Decimal ReconciledBalance { get; set; }
+        public Decimal? ReconciledBalance { get; set; }
         [Required]
         [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal LowBalanceWarning { get; set; }

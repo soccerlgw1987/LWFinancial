@@ -6,19 +6,28 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LWFinancial.Helpers;
 using LWFinancial.Models;
+using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
     public class AccountsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private AccountHelper accountHelper = new AccountHelper();
+        private HouseholdsHelper householdHelper = new HouseholdsHelper();
 
         // GET: Accounts
         public ActionResult Index()
         {
-            var projects = db.Accounts.Include(a => a.Household);
-            return View(projects.ToList());
+            var accounts = db.Accounts.Include(a => a.Household);
+            return View(accounts.ToList());
+        }
+
+        public ActionResult IndexMy()
+        {
+            return View();
         }
 
         // GET: Accounts/Details/5
@@ -48,13 +57,18 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,InitialBalance,CurrentBalance,ReconciledBalance,LowBalanceWarning,Created,HouseholdId")] Account account)
+        public ActionResult Create([Bind(Include = "Id,Name,InitialBalance,LowBalanceWarning")] Account account, int householdId)
         {
+            account.CurrentBalance = account.InitialBalance;
+            account.HouseholdId = householdId;
+            account.Created = DateTime.Now;
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
+
                 db.Accounts.Add(account);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexMy");
             }
 
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", account.HouseholdId);
@@ -82,13 +96,19 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,InitialBalance,CurrentBalance,ReconciledBalance,LowBalanceWarning,Created,HouseholdId")] Account account)
+        public ActionResult Edit([Bind(Include = "Id,Name,InitialBalance,CurrentBalance,ReconciledBalance,LowBalanceWarning,Created,HouseholdId")] Account account, int Id, int HouseholdId, DateTime Created, decimal CurrentBalance, decimal InitialBalance)
         {
+            account.Id = Id;
+            account.HouseholdId = HouseholdId;
+            account.Created = Created;
+            account.CurrentBalance = CurrentBalance;
+            account.InitialBalance = InitialBalance;
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
                 db.Entry(account).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexMy");
             }
             ViewBag.HouseholdId = new SelectList(db.Households, "Id", "Name", account.HouseholdId);
             return View(account);
@@ -112,9 +132,9 @@ namespace LWFinancial.Controllers
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int Id)
         {
-            Account account = db.Accounts.Find(id);
+            Account account = db.Accounts.Find(Id);
             db.Accounts.Remove(account);
             db.SaveChanges();
             return RedirectToAction("Index");

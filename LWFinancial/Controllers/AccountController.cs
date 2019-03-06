@@ -167,6 +167,79 @@ namespace LWFinancial.Controllers
             return View();
         }
 
+        // GET: /Account/RegisterNew
+        [AllowAnonymous]
+        public ActionResult RegisterNew(string email, string keycode, int householdId)
+        {
+            var registerViewModel = new RegisterViewModel
+            {
+                Email = email
+            };
+            return View();
+        }
+
+        // POST: /Account/Register
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RegisterNew(RegisterViewModel model, HttpPostedFileBase avatar, string email, string keycode, int householdId)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = new ApplicationUser
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    DisplayName = model.DisplayName,
+                    FullName = model.FirstName + " " + model.LastName
+                };
+
+                if (FileUploadValidator.IsWebFriendlyImage(avatar))
+                {
+                    var fileName = Path.GetFileName(avatar.FileName);
+                    avatar.SaveAs(Path.Combine(Server.MapPath("~/Uploads/"), fileName));
+                    user.AvatarPath = "/Uploads/" + fileName;
+                }
+
+                var result = await UserManager.CreateAsync(user, model.Password);
+
+                roleHelper.AddUserToRole(user.Id, RoleNames.Guest);
+
+                if (result.Succeeded)
+                {
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
+                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
+                    // Send an email with this link
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
+                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+
+                    var body = "Please confirm your account by clicking <a href=\"" + callbackUrl + "\"> here</a>";
+
+                    var from = "LWFinancial<LWFinancial@email.com>";
+
+                    var NewEmail = new MailMessage(from, model.Email)
+                    {
+                        Subject = "Confirm your account",
+                        Body = body,
+                        IsBodyHtml = true
+                    };
+
+                    var svc = new PersonalEmail();
+                    await svc.SendAsync(NewEmail);
+
+                    return RedirectToAction("AcceptInvite", "Households", new { email = email, keycode = keycode, householdId = householdId });
+                }
+                AddErrors(result);
+            }
+
+            // If we got this far, something failed, redisplay form
+            return View(model);
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]

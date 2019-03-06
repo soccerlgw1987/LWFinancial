@@ -13,6 +13,15 @@ namespace LWFinancial.Helpers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
 
+        public int ListUserHousehold(string userId)
+        {
+            ApplicationUser user = db.Users.Find(userId);
+
+            var household = user.HouseholdId;
+
+            return household.GetValueOrDefault();
+        }
+
         public ICollection<ApplicationUser> UsersInHousehold(int householdId)
         {
             return db.Households.Find(householdId).ApplicationUsers;

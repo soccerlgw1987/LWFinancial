@@ -1,4 +1,4 @@
-﻿
+﻿@using LWFinancial.Enumerations
 @using LWFinancial.Models
 @using Microsoft.AspNet.Identity
 @model LWFinancial.Models.ChangePasswordViewModel
@@ -62,21 +62,21 @@
             <div class="thumb-info-title">
                 <span class="thumb-info-inner">@User.Identity.Name</span>
                 <span class="thumb-info-type">
-                    @if (HttpContext.Current.User.IsInRole("Admin"))
+                    @if (User.IsInRole(RoleNames.Admin.ToString()))
                     {
                         <b>Admin</b>
                     }
-                    else if (HttpContext.Current.User.IsInRole("Project Manager"))
+                    else if (User.IsInRole(RoleNames.HOH.ToString()))
                     {
-                        <b>Project Manager</b>
+                        <b>Head of Household</b>
                     }
-                    else if (HttpContext.Current.User.IsInRole("Developer"))
+                    else if (User.IsInRole(RoleNames.Guest.ToString()))
                     {
-                        <b>Developer</b>
+                        <b>Guest</b>
                     }
-                    else if (HttpContext.Current.User.IsInRole("Submitter"))
+                    else if (User.IsInRole(RoleNames.Member.ToString()))
                     {
-                        <b>Submitter</b>
+                        <b>Member</b>
                     }
                     else
                     {

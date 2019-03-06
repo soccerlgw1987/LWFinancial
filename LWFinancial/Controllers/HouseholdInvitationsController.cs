@@ -19,6 +19,7 @@ namespace LWFinancial.Controllers
     {
         private ApplicationDbContext db = new ApplicationDbContext();
         private HouseholdsHelper houseHoldHelper = new HouseholdsHelper();
+        private UserRolesHelper rolesHelper = new UserRolesHelper();
 
         // GET: HouseholdInvitations
         public ActionResult Index()
@@ -92,21 +93,44 @@ namespace LWFinancial.Controllers
             db.HouseholdInvitations.Add(invitation);
             db.SaveChanges();
 
-            var callbackUrl = Url.Action("AcceptInvite", "Households", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
-            var acceptLink = "You can accept your invitation by clicking <a href=\"" + callbackUrl + "\">here</a>";
-
-            var from = "LWFinancial <LWFinancial@mailinator.com>";
-            var emailMessage = new MailMessage(from, email)
+            //if(rolesHelper.FindUser(invitation.Email) == invitation.Email)
+            if(db.Users.FirstOrDefault(e => e.Email == invitation.Email) != null)
             {
-                Subject = invitation.Title,
-                Body = $"{invitation.Decscription} <hr /><br /> {acceptLink}",
-                IsBodyHtml = true
-            };
+                var callbackUrl = Url.Action("AcceptInvite", "Households", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
+                var acceptLink = "You can accept your invitation by clicking <a href=\"" + callbackUrl + "\">here</a>";
 
-            var svc = new PersonalEmail();
-            await svc.SendAsync(emailMessage);
+                var from = "LWFinancial <LWFinancial@mailinator.com>";
+                var emailMessage = new MailMessage(from, email)
+                {
+                    Subject = invitation.Title,
+                    Body = $"{invitation.Decscription} <hr /><br /> {acceptLink}",
+                    IsBodyHtml = true
+                };
 
-            return RedirectToAction("Details", "Households", new { id = invitation.HouseholdId});
+                var svc = new PersonalEmail();
+                await svc.SendAsync(emailMessage);
+
+                return RedirectToAction("Details", "Households", new { id = invitation.HouseholdId});
+            }
+            else
+            {
+                var callbackUrl2 = Url.Action("RegisterNew", "Account", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
+                var acceptLink2 = "You can accept your invitation by clicking <a href=\"" + callbackUrl2 + "\">here</a>";
+
+                var from2 = "LWFinancial <LWFinancial@mailinator.com>";
+                var emailMessage2 = new MailMessage(from2, email)
+                {
+                    Subject = invitation.Title,
+                    Body = $"{invitation.Decscription} <hr /><br /> {acceptLink2}",
+                    IsBodyHtml = true
+                };
+
+                var svc2 = new PersonalEmail();
+                await svc2.SendAsync(emailMessage2);
+
+                return RedirectToAction("Details", "Households", new { id = invitation.HouseholdId });
+            }
+            
         }
 
         [Authorize]
