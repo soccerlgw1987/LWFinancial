@@ -25,6 +25,7 @@
     @using (Html.BeginForm("Edit","Households",FormMethod.Post, new { enctype = "Multipart/form-data"}))
     {
         @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.CurrentBudgetAmount)
 
         <div class="form-horizontal">
             <h4>Household</h4>

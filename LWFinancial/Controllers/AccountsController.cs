@@ -12,6 +12,7 @@ using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
+    [RequireHttps]
     public class AccountsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -91,12 +92,30 @@ namespace LWFinancial.Controllers
             return View(account);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int accountId, string accountName, decimal? reconciledAmount, decimal lowBalance)
+        {
+            var account = db.Accounts.Find(accountId);
+            account.Name = accountName;
+            account.ReconciledBalance = reconciledAmount;
+            account.LowBalanceWarning = lowBalance;
+            //etc...
+            db.Accounts.Attach(account);
+            db.Entry(account).Property(a => a.Name).IsModified = true;
+            db.Entry(account).Property(a => a.ReconciledBalance).IsModified = true;
+            db.Entry(account).Property(a => a.LowBalanceWarning).IsModified = true;
+            //etc... for each property that you want to be able to change in the edit.
+            db.SaveChanges();
+            return RedirectToAction("IndexMy"); //or whatever.
+        }
+
         // POST: Accounts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,InitialBalance,CurrentBalance,ReconciledBalance,LowBalanceWarning,Created,HouseholdId")] Account account, int Id, int HouseholdId, DateTime Created, decimal CurrentBalance, decimal InitialBalance)
+        public ActionResult EditOld([Bind(Include = "Id,Name,InitialBalance,CurrentBalance,ReconciledBalance,LowBalanceWarning,Created,HouseholdId")] Account account, int Id, int HouseholdId, DateTime Created, decimal CurrentBalance, decimal InitialBalance)
         {
             account.Id = Id;
             account.HouseholdId = HouseholdId;
@@ -129,15 +148,25 @@ namespace LWFinancial.Controllers
             return View(account);
         }
 
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult Delete(int accountId)
+        //{
+        //    var account = db.Accounts.Find(accountId);
+        //    db.Accounts.Remove(account);
+        //    db.SaveChanges();
+        //    return RedirectToAction("IndexMy");
+        //}
+
         // POST: Accounts/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int Id)
+        public ActionResult DeleteConfirmed(int accountId)
         {
-            Account account = db.Accounts.Find(Id);
+            Account account = db.Accounts.Find(accountId);
             db.Accounts.Remove(account);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexMy");
         }
 
         protected override void Dispose(bool disposing)

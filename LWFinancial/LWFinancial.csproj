@@ -175,6 +175,7 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AccountsController.cs" />
+    <Compile Include="Controllers\AjaxDataController.cs" />
     <Compile Include="Controllers\BudgetItemsController.cs" />
     <Compile Include="Controllers\BudgetsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -192,8 +193,11 @@
     <Compile Include="Helpers\AccountEditHelper.cs" />
     <Compile Include="Helpers\AccountHelper.cs" />
     <Compile Include="Helpers\AuthorizationHelper.cs" />
+    <Compile Include="Helpers\BudgetHelper.cs" />
+    <Compile Include="Helpers\BudgetItemHelper.cs" />
     <Compile Include="Helpers\FileUploadValidator.cs" />
     <Compile Include="Helpers\HouseholdsHelper.cs" />
+    <Compile Include="Helpers\NotificationHelper.cs" />
     <Compile Include="Helpers\TransactionHelper.cs" />
     <Compile Include="Helpers\UserRolesHelper.cs" />
     <Compile Include="Migrations\Configuration.cs" />
@@ -202,6 +206,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Budget.cs" />
     <Compile Include="Models\BudgetItem.cs" />
+    <Compile Include="Models\DoubleChart.cs" />
     <Compile Include="Models\EmailModel.cs" />
     <Compile Include="Models\Household.cs" />
     <Compile Include="Models\HouseholdInvitation.cs" />
@@ -400,6 +405,7 @@
     <Content Include="fonts\FontAwesome.otf" />
     <Content Include="Private.config" />
     <None Include="Properties\PublishProfiles\LWFinancial - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\LWFinancialProject - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\codemirror.js" />
     <Content Include="Scripts\css.js" />
@@ -483,6 +489,7 @@
     <Content Include="Scripts\xml.js" />
     <Content Include="Uploads\adminHead.png" />
     <Content Include="Uploads\devHead.jpg" />
+    <Content Include="Uploads\Header1.jpg" />
     <Content Include="Uploads\HeadPic.jpg" />
     <Content Include="Uploads\pmHead.png" />
     <Content Include="Uploads\subHead.png" />
@@ -576,9 +583,17 @@
     <Content Include="Views\Accounts\IndexMy.cshtml" />
     <Content Include="Views\Shared\_AccountTable.cshtml" />
     <Content Include="Views\Shared\_AccountEdit.cshtml" />
+    <Content Include="Views\Shared\_BudgetTable.cshtml" />
+    <Content Include="Views\Budgets\IndexMy.cshtml" />
+    <Content Include="Views\BudgetItems\IndexMy.cshtml" />
+    <Content Include="Views\Shared\_BudgetItemTable.cshtml" />
+    <Content Include="Views\Shared\_TransactionTable.cshtml" />
+    <Content Include="Views\Transactions\IndexMy.cshtml" />
+    <Content Include="Views\Shared\_EasyPieChart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\AjaxData\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

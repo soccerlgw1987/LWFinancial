@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNet.Identity
 @using LWFinancial.Models
 @using LWFinancial.Enumerations
+@using LWFinancial.Helpers
 
 <!doctype html>
 <html class="fixed">
@@ -65,7 +66,9 @@
 
 </head>
 <body>
-
+    @{
+        var notificationHelper = new NotificationHelper();
+    }
     <section class="body">
 
         <!-- start: header -->
@@ -110,7 +113,7 @@
                             </div>
                         </li>*@
 
-                    @*<li>
+                    <li>
                         <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
                             <i class="fa fa-envelope"></i>
                             @if (notificationHelper.GetUnreadNotificationCount() > 0)
@@ -134,8 +137,8 @@
                                     @foreach (var item in notificationHelper.GetNewNotifications().Take(3))
                                     {
                                         <li>
-                                            <span class="title">LWFinancial</span>
-                                            <span class="message">@item.NotificationBody</span>
+                                            <span class="title">@item.Title</span>
+                                            <span class="message">@item.Decscription</span>
                                         </li>
                                     }
                                 </ul>
@@ -143,100 +146,100 @@
                                 <hr />
 
                                 <div class="text-right">
-                                    <a href="@Url.Action("Index","TicketNotifications")" class="view-more">View All</a>
+                                    <a href="@Url.Action("Index","HouseholdNotifications")" class="view-more">View All</a>
                                 </div>
                             </div>
                         </div>
-                    </li>*@
+                    </li>
                     @*<li>
-                        <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
-                            <i class="fa fa-bell"></i>
-                            @if (@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count() > 0)
-                            {
-                                <span class="badge">@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count()</span>
-                            }
-                        </a>
+                            <a href="#" class="dropdown-toggle notification-icon" data-toggle="dropdown">
+                                <i class="fa fa-bell"></i>
+                                @if (@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count() > 0)
+                                {
+                                    <span class="badge">@projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed" && s.CompletionDate <= DateTime.Now.AddDays(-2)).Count()</span>
+                                }
+                            </a>
 
-                        <div class="dropdown-menu notification-menu">
-                            <div class="notification-title">
-                                <span class="pull-right label label-default"></span>
-                                Alerts
-                            </div>
+                            <div class="dropdown-menu notification-menu">
+                                <div class="notification-title">
+                                    <span class="pull-right label label-default"></span>
+                                    Alerts
+                                </div>
 
-                            <div class="content">
-                                <ul>
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
+                                <div class="content">
+                                    <ul>
+                                        @if (User.IsInRole("Admin"))
                                         {
-                                            if (item.CompletionDate < DateTime.Now)
+                                            foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
                                             {
-                                                <li>
-                                                    <div class="image">
-                                                        <i class="fa fa-exclamation bg-danger"></i>
-                                                    </div>
-                                                    <span class="title">Overdue!</span>
-                                                    <span class="message">Project: @item.Name</span>
-                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
-                                                </li>
-                                            }
-                                            else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
-                                            {
-                                                <li>
-                                                    <div class="image">
-                                                        <i class="fa fa-lock bg-warning"></i>
-                                                    </div>
-                                                    <span class="title">Approaching Completion Date</span>
-                                                    <span class="message">Project: @item.Name</span>
-                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
-                                                </li>
+                                                if (item.CompletionDate < DateTime.Now)
+                                                {
+                                                    <li>
+                                                        <div class="image">
+                                                            <i class="fa fa-exclamation bg-danger"></i>
+                                                        </div>
+                                                        <span class="title">Overdue!</span>
+                                                        <span class="message">Project: @item.Name</span>
+                                                        <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                    </li>
+                                                }
+                                                else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
+                                                {
+                                                    <li>
+                                                        <div class="image">
+                                                            <i class="fa fa-lock bg-warning"></i>
+                                                        </div>
+                                                        <span class="title">Approaching Completion Date</span>
+                                                        <span class="message">Project: @item.Name</span>
+                                                        <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                    </li>
+                                                }
                                             }
                                         }
-                                    }
-                                    else
-                                    {
-                                        foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
+                                        else
                                         {
-                                            if (item.CompletionDate < DateTime.Now)
+                                            foreach (var item in projectHelper.ListUserProjects(User.Identity.GetUserId()).Where(s => s.ProjectStatus.Status != "Completed"))
                                             {
-                                                <li>
-                                                    <div class="image">
-                                                        <i class="fa fa-exclamation bg-danger"></i>
-                                                    </div>
-                                                    <span class="title">Overdue!</span>
-                                                    <span class="message">Project: @item.Name</span>
-                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
-                                                </li>
-                                            }
-                                            else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
-                                            {
-                                                <li>
-                                                    <div class="image">
-                                                        <i class="fa fa-lock bg-warning"></i>
-                                                    </div>
-                                                    <span class="title">Approaching Completion Date</span>
-                                                    <span class="message">Project: @item.Name</span>
-                                                    <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
-                                                </li>
+                                                if (item.CompletionDate < DateTime.Now)
+                                                {
+                                                    <li>
+                                                        <div class="image">
+                                                            <i class="fa fa-exclamation bg-danger"></i>
+                                                        </div>
+                                                        <span class="title">Overdue!</span>
+                                                        <span class="message">Project: @item.Name</span>
+                                                        <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                    </li>
+                                                }
+                                                else if (item.CompletionDate <= DateTime.Now.AddDays(-2))
+                                                {
+                                                    <li>
+                                                        <div class="image">
+                                                            <i class="fa fa-lock bg-warning"></i>
+                                                        </div>
+                                                        <span class="title">Approaching Completion Date</span>
+                                                        <span class="message">Project: @item.Name</span>
+                                                        <span class="message">Due: @item.CompletionDate.ToString("M/dd/yyyy")</span>
+                                                    </li>
+                                                }
                                             }
                                         }
-                                    }
 
-                                </ul>
-                                <hr />
-                                <div class="text-right">
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a href="@Url.Action("Index","Projects")" class="view-more">View All</a>
-                                    }
-                                    else
-                                    {
-                                        <a href="@Url.Action("IndexMy","Projects")" class="view-more">View All</a>
-                                    }
+                                    </ul>
+                                    <hr />
+                                    <div class="text-right">
+                                        @if (User.IsInRole("Admin"))
+                                        {
+                                            <a href="@Url.Action("Index","Projects")" class="view-more">View All</a>
+                                        }
+                                        else
+                                        {
+                                            <a href="@Url.Action("IndexMy","Projects")" class="view-more">View All</a>
+                                        }
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </li>*@
+                        </li>*@
                 </ul>
 
                 <span class="separator"></span>
@@ -338,7 +341,7 @@
                         <i class="fa fa-bars" aria-label="Toggle sidebar"></i>
                     </div>
                 </div>
-                @{ 
+                @{
                     var user = db.Users.Find(User.Identity.GetUserId());
                 }
                 <div class="nano">
@@ -351,7 +354,7 @@
                                         <span>Dashboard</span>
                                     </a>
                                 </li>
-                                @if(user.HouseholdId != null)
+                                @if (user.HouseholdId != null)
                                 {
                                     <li class="nav-parent">
                                         <a>
@@ -371,12 +374,12 @@
                                                 </a>
                                                 <ul class="nav nav-children">
                                                     <li>
-                                                        <a href="@Url.Action("Index","Budgets")">
+                                                        <a href="@Url.Action("IndexMy","Budgets")">
                                                             <i class="fa fa-dashboard" aria-hidden="true"></i>Dashboard
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a href="@Url.Action("Index","BudgetItems")">
+                                                        <a href="@Url.Action("IndexMy","BudgetItems")">
                                                             <i class="fa fa-money" aria-hidden="true"></i>Budget Items
                                                         </a>
                                                     </li>
@@ -388,46 +391,46 @@
                                                 </a>
                                             </li>
                                             <li>
-                                                <a href="@Url.Action("Index","Transactions")">
+                                                <a href="@Url.Action("IndexMy","Transactions")">
                                                     <i class="fa fa-dollar" aria-hidden="true"></i>Transactions
                                                 </a>
                                             </li>
                                         </ul>
                                     </li>
                                 }
-                                
+
                                 @*@if (User.IsInRole("Admin"))
-                                {
-                                    <li>
-                                        <a href="@Url.Action("Index", "Users")">
-                                            <i class="fa fa-tasks" aria-hidden="true"></i>
-                                            <span>Assign Roles</span>
-                                        </a>
-                                    </li>
-                                }*@
-                                                        @*@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
-                                {
-                                    <li>
-                                        <a href="@Url.Action("Index", "Projects")">
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "Users")">
+                                                <i class="fa fa-tasks" aria-hidden="true"></i>
+                                                <span>Assign Roles</span>
+                                            </a>
+                                        </li>
+                                    }*@
+                                @*@if (User.IsInRole("Admin") || User.IsInRole("Project Manager"))
+                                    {
+                                        <li>
+                                            <a href="@Url.Action("Index", "Projects")">
+                                                <i class="fa fa-briefcase" aria-hidden="true"></i>
+                                                <span>All Projects</span>
+                                            </a>
+                                        </li>
+                                    }*@
+
+                                @*<li>
+                                        <a href="@Url.Action("Index","Households")">
                                             <i class="fa fa-briefcase" aria-hidden="true"></i>
-                                            <span>All Projects</span>
+                                            <span>All Households</span>
                                         </a>
-                                    </li>
-                                }*@
+                                    </li>*@
 
-                                                        @*<li>
-                                    <a href="@Url.Action("Index","Households")">
-                                        <i class="fa fa-briefcase" aria-hidden="true"></i>
-                                        <span>All Households</span>
-                                    </a>
-                                </li>*@
-
-                                                        @*<li>
-                                    <a href="@Url.Action("Index","Tickets")">
-                                        <i class="fa fa-ticket" aria-hidden="true"></i>
-                                        <span>Tickets</span>
-                                    </a>
-                                </li>*@
+                                @*<li>
+                                        <a href="@Url.Action("Index","Tickets")">
+                                            <i class="fa fa-ticket" aria-hidden="true"></i>
+                                            <span>Tickets</span>
+                                        </a>
+                                    </li>*@
                             </ul>
                         </nav>
 

@@ -15,29 +15,15 @@ namespace LWFinancial.Helpers
         private ApplicationDbContext db = new ApplicationDbContext();
         private ApplicationUser user = new ApplicationUser();
 
-        public bool IsUserInRole(string userId, string roleName)
+        public bool IsUserInRole(string userId, RoleNames roleName)
         {
-            return userManager.IsInRole(userId, roleName);
+            return userManager.IsInRole(userId, roleName.ToString());
         }
 
         public ICollection<string> ListUserRoles(string userId)
         {
             return userManager.GetRoles(userId);
         }
-
-        //public string FindUser(string email)
-        //{
-        //    foreach(var item in db.Users)
-        //    {
-        //        if(item.ToString() == email)
-        //        {
-        //            var emailResult = email;
-        //            return emailResult;
-        //        }
-        //    }
-        //    var answer = "nope";
-        //    return answer;
-        //}
 
         public bool AddUserToRole(string userId, RoleNames roleName)
         {
@@ -51,28 +37,16 @@ namespace LWFinancial.Helpers
             return result.Succeeded;
         }
 
-        public ICollection<ApplicationUser> UsersInRole(string roleName)
+        public string UserInRole(RoleNames roleName)
         {
-            var resultList = new List<ApplicationUser>();
+            var result = "";
             var List = userManager.Users.ToList();
             foreach (var user in List)
             {
                 if (IsUserInRole(user.Id, roleName))
-                    resultList.Add(user);
+                    result = user.Id;
             }
-            return resultList;
-        }
-
-        public ICollection<ApplicationUser> UsersNotInRole(string roleName)
-        {
-            var resultList = new List<ApplicationUser>();
-            var List = userManager.Users.ToList();
-            foreach (var user in List)
-            {
-                if (!IsUserInRole(user.Id, roleName))
-                    resultList.Add(user);
-            }
-            return resultList;
+            return result;
         }
     }
 }

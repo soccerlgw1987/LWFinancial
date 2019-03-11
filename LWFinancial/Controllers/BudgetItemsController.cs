@@ -6,19 +6,34 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LWFinancial.Helpers;
 using LWFinancial.Models;
+using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
+    [RequireHttps]
     public class BudgetItemsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private BudgetHelper budgetHelper = new BudgetHelper();
+        private HouseholdsHelper householdHelper = new HouseholdsHelper();
+        private Budget budget = new Budget();
 
         // GET: BudgetItems
         public ActionResult Index()
         {
             var budgetItems = db.BudgetItems.Include(b => b.Budget);
             return View(budgetItems.ToList());
+        }
+
+        // GET: BudgetItems
+        public ActionResult IndexMy()
+        {
+            var householdId = householdHelper.ListUserHousehold(User.Identity.GetUserId());
+            
+            ViewBag.BudgetId = new SelectList(db.Budgets.Where(h => h.HouseholdId == householdId).ToList(), "Id", "Name");
+            return View();
         }
 
         // GET: BudgetItems/Details/5
@@ -48,13 +63,16 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,DesiredAmount,CurrentAmount,BudgetId")] BudgetItem budgetItem)
+        public ActionResult Create([Bind(Include = "Id,BudgetId,Name,DesiredAmount")] BudgetItem budgetItem)
         {
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
             if (ModelState.IsValid)
             {
+                
+                budgetHelper.UpdateBudgetIncome(budgetItem.BudgetId, budgetItem.DesiredAmount);
                 db.BudgetItems.Add(budgetItem);
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("IndexMy");
             }
 
             ViewBag.BudgetId = new SelectList(db.Budgets, "Id", "Name", budgetItem.BudgetId);
@@ -77,12 +95,39 @@ namespace LWFinancial.Controllers
             return View(budgetItem);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int budgetItemId, string budgetItemName, decimal desiredAmount)
+        {
+            var budgetItem = db.BudgetItems.Find(budgetItemId);
+            decimal newBudgetItem = 0;
+            budgetItem.Name = budgetItemName;
+            if (budgetItem.DesiredAmount == desiredAmount)
+            {
+                budgetItem.DesiredAmount = desiredAmount;
+            }
+            else
+            {
+                newBudgetItem = desiredAmount - budgetItem.DesiredAmount;
+                budgetHelper.UpdateBudgetIncome(budgetItem.BudgetId, newBudgetItem);
+                budgetItem.DesiredAmount = desiredAmount;
+            }
+
+            //etc...
+            db.BudgetItems.Attach(budgetItem);
+            db.Entry(budgetItem).Property(a => a.Name).IsModified = true;
+            db.Entry(budgetItem).Property(a => a.DesiredAmount).IsModified = true;
+            //etc... for each property that you want to be able to change in the edit.
+            db.SaveChanges();
+            return RedirectToAction("IndexMy"); //or whatever.
+        }
+
         // POST: BudgetItems/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,DesiredAmount,CurrentAmount,BudgetId")] BudgetItem budgetItem)
+        public ActionResult EditOld([Bind(Include = "Id,Name,DesiredAmount,CurrentAmount,BudgetId")] BudgetItem budgetItem)
         {
             if (ModelState.IsValid)
             {
@@ -115,9 +160,12 @@ namespace LWFinancial.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             BudgetItem budgetItem = db.BudgetItems.Find(id);
+
+            budgetHelper.UpdateBudgetDeleteIncome(budgetItem.BudgetId, budgetItem.DesiredAmount);
+
             db.BudgetItems.Remove(budgetItem);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexMy");
         }
 
         protected override void Dispose(bool disposing)

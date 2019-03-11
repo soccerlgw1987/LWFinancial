@@ -1,4 +1,4 @@
-﻿@model IEnumerable<LWFinancial.Models.Account>
+﻿@model IEnumerable<LWFinancial.Models.BudgetItem>
 
 @using LWFinancial.Helpers
 @using LWFinancial.Enumerations
@@ -10,18 +10,17 @@
             <a href="#" class="fa fa-caret-down"></a>
         </div>
 
-        <h2 class="panel-title">Accounts</h2>
+        <h2 class="panel-title">Budget Items</h2>
     </header>
     <div class="panel-body">
         <div class="table-responsive">
             <table class="table table-hover mb-none">
                 <thead>
                     <tr>
-                        <th>@Html.DisplayNameFor(model => model.Name)</th>
-                        <th>@Html.DisplayName("Initial Balance")</th>
+                        <th>@Html.DisplayName("Budget Name")</th>
+                        <th>@Html.DisplayName("Budget Item")</th>
+                        <th>@Html.DisplayName("Desired Balance")</th>
                         <th>@Html.DisplayName("Current Balance")</th>
-                        <th>@Html.DisplayName("Reconciled Balance")</th>
-                        <th>@Html.DisplayName("Low Balance Alert")</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -30,21 +29,19 @@
                     @foreach (var item in Model)
                     {
                         <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Budget.Name)</td>
                             <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                            <td>$@Html.DisplayFor(modelItem => item.InitialBalance)</td>
-                            <td>$@Html.DisplayFor(modelItem => item.CurrentBalance)</td>
-                            @if (item.ReconciledBalance > 0)
+                            <td>$@Html.DisplayFor(modelItem => item.DesiredAmount)</td>
+                            @if (item.CurrentAmount > 0)
                             {
-                                <td>$@Html.DisplayFor(modelItem => item.ReconciledBalance)</td>
+                                <td>$@Html.DisplayFor(modelItem => item.CurrentAmount)</td>
                             }
                             else
                             {
-                                <td>@Html.DisplayFor(modelItem => item.ReconciledBalance)</td>
+                                <td>@Html.DisplayFor(modelItem => item.CurrentAmount)</td>
                             }
-
-                            <td>$@Html.DisplayFor(modelItem => item.LowBalanceWarning)</td>
                             <td class="actions-hover actions-fade">
-                                <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-info" data-toggle="modal" data-target="#editModal" data-id="@item.Id" data-accountname="@item.Name" data-reconciledamount="@item.ReconciledBalance" data-lowbalanceamount="@item.LowBalanceWarning">Edit</a>
+                                <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-info" data-toggle="modal" data-target="#editModal" data-id="@item.Id" data-budgetitemname="@item.Name" data-desiredamount="@item.DesiredAmount">Edit</a>
                                 <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-id="@item.Id">Delete</a>
                             </td>
                         </tr>

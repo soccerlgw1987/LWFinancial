@@ -1,66 +1,131 @@
 ﻿@model LWFinancial.Models.HouseholdNotification
 
-@{
-    ViewBag.Title = "Details";
+@using LWFinancial.Models
+@using Microsoft.AspNet.Identity
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Details</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Home")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+                <li><span>Notifications</span></li>
+                <li><span>Details</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+
+    <section class="content-with-menu mailbox">
+        <div class="content-with-menu-container" data-mailbox data-mailbox-view="email">
+
+            <div class="inner-body mailbox-email">
+                <!-- START: .mailbox-header -->
+                <div class="mailbox-email-header mb-lg">
+                    <h3 class="mailbox-email-subject m-none text-light">
+                        Notification Title - @Model.Title
+                    </h3>
+
+                    <p class="mt-lg mb-none text-md">From LWFinancial to @Model.Recipient.FirstName @Model.Recipient.LastName, sent on @Model.Created.ToString("MMMM dd, yyyy h:mm tt")</p>
+                </div>
+                <div class="mailbox-email-container">
+                    <div class="mailbox-email-screen">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <div class="panel-actions">
+                                </div>
+
+                                <p class="panel-title"></p>
+                            </div>
+                            <div class="panel-body">
+                                <p>@Model.Decscription</p>
+                                <p>Click here to view this <a href="@Url.Action("IndexMy","Accounts")">account!</a></p>
+                            </div>
+                            <div class="panel-footer">
+                                <p class="m-none"><small>@Model.Created.ToString("MMMM dd, yyyy h:mm tt")</small></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }
 
-<h2>Details</h2>
+@*@{
+        ViewBag.Title = "Details";
+    }
 
-<div>
-    <h4>HouseholdNotification</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Household.Name)
-        </dt>
+    <h2>Details</h2>
 
-        <dd>
-            @Html.DisplayFor(model => model.Household.Name)
-        </dd>
+    <div>
+        <h4>HouseholdNotification</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Household.Name)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Recipient.FirstName)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Household.Name)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Recipient.FirstName)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Recipient.FirstName)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Recipient.FirstName)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Title)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Decscription)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Title)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Decscription)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Decscription)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Decscription)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Created)
+            </dt>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Read)
-        </dt>
+            <dd>
+                @Html.DisplayFor(model => model.Created)
+            </dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Read)
-        </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.Read)
+            </dt>
 
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+            <dd>
+                @Html.DisplayFor(model => model.Read)
+            </dd>
+
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>*@

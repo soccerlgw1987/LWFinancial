@@ -10,6 +10,7 @@ using LWFinancial.Models;
 
 namespace LWFinancial.Controllers
 {
+    [RequireHttps]
     public class HouseholdNotificationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -85,10 +86,11 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Title,Decscription,Created,Read,HouseholdId,RecipientId")] HouseholdNotification householdNotification)
+        public ActionResult Edit([Bind(Include = "Id,Title,Decscription,Created,Read,HouseholdId,RecipientId")] HouseholdNotification householdNotification, bool notificationRead)
         {
             if (ModelState.IsValid)
             {
+                householdNotification.Read = notificationRead;
                 db.Entry(householdNotification).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");

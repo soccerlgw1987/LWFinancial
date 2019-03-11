@@ -1,5 +1,5 @@
 ﻿
-@model LWFinancial.Models.Account
+@model LWFinancial.Models.Transaction
 @using LWFinancial.Models
 @using LWFinancial.Helpers
 @using LWFinancial.Enumerations
@@ -7,7 +7,7 @@
 
 <section role="main" class="content-body">
     <header class="page-header">
-        <h2>Add Accounts</h2>
+        <h2>Transactions</h2>
 
         <div class="right-wrapper pull-right">
             <ol class="breadcrumbs">
@@ -17,7 +17,7 @@
                     </a>
                 </li>
                 <li><span>Dashboard</span></li>
-                <li><span>Accounts</span></li>
+                <li><span>Transactions</span></li>
             </ol>
 
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
@@ -28,13 +28,13 @@
     @{
         var db = new ApplicationDbContext();
         var user = db.Users.Find(User.Identity.GetUserId());
-        var accountHelper = new AccountHelper();
+        var transactionHelper = new TransactionHelper();
         var householdHelper = new HouseholdsHelper();
     }
     <!--Create-->
     <div class="row">
         <div class="col-md-6" style="padding-left:16px">
-            <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary btn-lg" data-toggle="modal" data-target="#accountModal">Create Account</a>
+            <a class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-primary btn-lg" data-toggle="modal" data-target="#accountModal">Create a transaction</a>
         </div>
     </div>
     <div id="accountModal" class="modal fade" role="dialog">
@@ -42,33 +42,41 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <header class="panel-heading" style="background-color:steelblue">
-                    <h2 class="panel-title"><a style="color:white">Create an account</a></h2>
+                    <h2 class="panel-title"><a style="color:white">Create a transaction</a></h2>
                 </header>
-                @using (Html.BeginForm("Create", "Accounts", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                @using (Html.BeginForm("Create", "Transactions", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.Hidden("householdId", user.HouseholdId)
-                    @Html.HiddenFor(model => model.Created)
-                    @Html.HiddenFor(model => model.CurrentBalance)
-                    @Html.HiddenFor(model => model.ReconciledBalance)
                     <section class="panel">
                         <div class="panel-body">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Account Name</label>
                                 <div class="col-sm-9">
-                                    @Html.Editor("Name", new { htmlAttributes = new { @class = "form-control", placeholder = "Type account name..." } })
+                                    @Html.DropDownList("AccountId", null, htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Budget Name</label>
+                                <div class="col-sm-9">
+                                    @Html.DropDownList("BudgetItemId", null, "--Select--", htmlAttributes: new { @class = "form-control" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Transaction Name</label>
+                                <div class="col-sm-9">
+                                    @Html.Editor("Name", new { htmlAttributes = new { @class = "form-control", placeholder = "Type transaction name..." } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Type</label>
+                                <div class="col-sm-9">
+                                    @Html.EnumDropDownListFor(model => model.Type, htmlAttributes: new { @class = "form-control" })
                                 </div>
                             </div>
                             <div class="form-group mt-lg">
-                                <label class="col-sm-3 control-label">Initial Balance</label>
+                                <label class="col-sm-3 control-label">Amount</label>
                                 <div class="col-sm-9">
-                                    @Html.Editor("InitialBalance", new { htmlAttributes = new { @class = "form-control", placeholder = "Type the starting balance..." } })
-                                </div>
-                            </div>
-                            <div class="form-group mt-lg">
-                                <label class="col-sm-3 control-label">Low Balance Alert</label>
-                                <div class="col-sm-9">
-                                    @Html.Editor("LowBalanceWarning", new { htmlAttributes = new { @class = "form-control", placeholder = "Type desired low alert amount..." } })
+                                    @Html.Editor("Amount", new { htmlAttributes = new { @class = "form-control", placeholder = "Type desired amount..." } })
                                 </div>
                             </div>
                             <br />
@@ -96,28 +104,46 @@
                 <header class="panel-heading" style="background-color:skyblue">
                     <h2 class="panel-title" style="color:white">Edit an Account</h2>
                 </header>
-                @using (Html.BeginForm("Edit", "Accounts", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                @using (Html.BeginForm("Edit", "Transactions", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.Hidden("accountId")
+                    @Html.Hidden("transactionId")
                     <section class="panel">
                         <div class="panel-body">
                             <div class="form-group">
                                 <label class="col-sm-3 control-label">Account Name</label>
                                 <div class="col-sm-9">
-                                    @Html.Editor("accountName", new { htmlAttributes = new { @class = "form-control", placeholder = "Type account name..." } })
+                                    @Html.Editor("accountId", new { htmlAttributes = new { @class = "form-control", placeholder = "Type account name..." } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Budget Item Name</label>
+                                <div class="col-sm-9">
+                                    @Html.Editor("budgetItemId", new { htmlAttributes = new { @class = "form-control", placeholder = "Type budget item name..." } })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-sm-3 control-label">Transaction Name</label>
+                                <div class="col-sm-9">
+                                    @Html.Editor("transactionName", new { htmlAttributes = new { @class = "form-control", placeholder = "Type transaction name..." } })
                                 </div>
                             </div>
                             <div class="form-group mt-lg">
-                                <label class="col-sm-3 control-label">Reconciled Balance</label>
+                                <label class="col-sm-3 control-label">Transaction Amount</label>
                                 <div class="col-sm-9">
-                                    @Html.Editor("reconciledBalance", new { htmlAttributes = new { @class = "form-control", placeholder = "Type the reconciled balance..." } })
+                                    @Html.Editor("transactionType", new { htmlAttributes = new { @class = "form-control" } })
                                 </div>
                             </div>
                             <div class="form-group mt-lg">
-                                <label class="col-sm-3 control-label">Low Balance Alert</label>
+                                <label class="col-sm-3 control-label">Transaction Amount</label>
                                 <div class="col-sm-9">
-                                    @Html.Editor("lowBalance", new { htmlAttributes = new { @class = "form-control", placeholder = "Type desired low alert amount..." } })
+                                    @Html.Editor("transactionAmount", new { htmlAttributes = new { @class = "form-control", placeholder = "Type desired amount..." } })
+                                </div>
+                            </div>
+                            <div class="form-group mt-lg">
+                                <label class="col-sm-3 control-label">Reconciled Amount</label>
+                                <div class="col-sm-9">
+                                    @Html.Editor("transactionReconciledAmount", new { htmlAttributes = new { @class = "form-control", placeholder = "Type desired amount..." } })
                                 </div>
                             </div>
                             <br />
@@ -141,12 +167,12 @@
             <!-- Modal content-->
             <div class="modal-content">
                 <header class="panel-heading" style="background-color:darkred">
-                    <h2 class="panel-title" style="color:white">Delete an account</h2>
+                    <h2 class="panel-title" style="color:white">Delete a budget item</h2>
                 </header>
-                @using (Html.BeginForm("Delete", "Accounts", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
+                @using (Html.BeginForm("Delete", "Transactions", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
                 {
                     @Html.AntiForgeryToken()
-                    @Html.Hidden("accountId")
+                    @Html.Hidden("transactionId")
                     <section class="panel">
                         <div class="panel-body">
                             <div class="modal-wrapper">
@@ -154,7 +180,7 @@
                                     <i class="fa fa-times-circle"></i>
                                 </div>
                                 <div class="modal-text">
-                                    <p>You are about to delete an Account. Are you sure you would like to do this?</p>
+                                    <p>You are about to delete a Transaction. Are you sure you would like to do this?</p>
                                 </div>
                             </div>
                         </div>
@@ -172,9 +198,8 @@
         </div>
     </div>
 
-
     <!--Index-->
-    @Html.Partial("_AccountTable", accountHelper.ListHouseholdAccounts(householdHelper.ListUserHousehold(User.Identity.GetUserId())))
+    @Html.Partial("_TransactionTable", transactionHelper.ListTransactions(householdHelper.ListUserHousehold(User.Identity.GetUserId())))
     <!-- end: page -->
 
 </section>
@@ -187,24 +212,30 @@
 
             //finds the related data in the element with attribute
             //of 'data-id' and sets it to var userId
-            var accountId = $(this).data('id');
+            var transactionId = $(this).data('id');
             //get the account Name from the data-accountName field
-            var accountName = $(this).data('accountname');
+            var accountId = $(this).data('accountid');
+            var budgetItemId = $(this).data('budgetitemid');
+            var transactionName = $(this).data('transactionname');
+            var transactionType = $(this).data('transactiontype');
+            var transactionAmount = $(this).data('transactionamount');
+            var transactionReconciledAmount = $(this).data('transactionreconciledamount');
             //example in html: data-reconciledAmount="item.ReconciledAmount" will go to this variable.
-            var currentReconciledAmount = $(this).data('reconciledamount');
-            var currentLowBalance = $(this).data('lowbalanceamount');
             //etc.. for all necessary fields for your form.
 
             //finds the input with the name of 'acountId' and pushes
             //our variable into the value.
-            $('#editModal').find('input[name="accountId"]').val(accountId);
+            $('#editModal').find('input[name="transactionId"]').val(transactionId);
             //finds the input (or hidden) with the name of accountName and pushes
             //the variable in.
-            $('#editModal').find('input[name="accountName"]').val(accountName);
+            $('#editModal').find('input[name="accountId"]').val(accountId);
+            $('#editModal').find('input[name="budgetItemId"]').val(budgetItemId);
+            $('#editModal').find('input[name="transactionName"]').val(transactionName);
+            $('#editModal').find('input[name="transactionType"]').val(transactionType);
+            $('#editModal').find('input[name="transactionAmount"]').val(transactionAmount);
+            $('#editModal').find('input[name="transactionReconciledAmount"]').val(transactionReconciledAmount);
             //When the user opens the modal, the current Reconciled Balance will
             //already be populating the input, and they can make changes.
-            $('#editModal').find('input[name="reconciledBalance"]').val(currentReconciledAmount);
-            $('#editModal').find('input[name="lowBalance"]').val(currentLowBalance);
 
         });
     </script>
@@ -214,12 +245,14 @@
 
             //finds the related data in the element with attribute
             //of 'data-id' and sets it to var userId
-            var accountId = $(this).data('id');
+            var transactionId = $(this).data('id');
 
             //finds the input with the name of 'acountId' and pushes
             //our variable into the value.
-            $('#deleteModal').find('input[name="accountId"]').val(accountId);
+            $('#deleteModal').find('input[name="transactionId"]').val(transactionId);
         });
     </script>
 
 }
+
+

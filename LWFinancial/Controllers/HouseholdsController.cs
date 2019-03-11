@@ -15,6 +15,7 @@ using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
+    [RequireHttps]
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -87,7 +88,7 @@ namespace LWFinancial.Controllers
                 foreach (var item in household.ApplicationUsers)
                 {
                     houseHelper.RemoveUserFromHousehold(item.Id, householdId);
-                    if(roleHelper.IsUserInRole(item.Id, RoleNames.HOH.ToString()))
+                    if(roleHelper.IsUserInRole(item.Id, RoleNames.HOH))
                     {
                         roleHelper.RemoveUserFromRole(item.Id, RoleNames.HOH.ToString());
                     }
@@ -206,7 +207,7 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Decscription,AvatarPath,Created,Updated,IncomeAmount")] Household household, HttpPostedFileBase image)
+        public ActionResult Edit([Bind(Include = "Id,Name,Decscription,AvatarPath,Created,Updated,IncomeAmount,CurrentBudgetAmount")] Household household, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {

@@ -20,8 +20,7 @@ namespace LWFinancial.Models
         [Required]
         [Range(0.01,100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
         public Decimal Amount { get; set; }
-        [Range(0.01, 100000, ErrorMessage = "Please enter an amount between 0.01 and 100,000.")]
-        public Decimal ReconciledAmount { get; set; }
+        public Decimal? ReconciledAmount { get; set; }
         public bool Reconciled { get; set; }
 
         public int AccountId { get; set; }

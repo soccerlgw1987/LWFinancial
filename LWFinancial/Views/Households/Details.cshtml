@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-md-offset-10">
             <a class="mb-xs mt-xs mr-xs modal-basic btn btn-danger" href="#modalHeaderColorDanger">Leave Household</a>
-            <div id="modalHeaderColorDanger" class="modal-block modal-header-color modal-block-danger mfp-hide">
+            <div id="modalHeaderColorDanger" class="zoom-anim-dialog modal-block modal-header-color modal-block-danger mfp-hide">
                 <section class="panel">
                     <header class="panel-heading">
                         <h2 class="panel-title">WARNING!</h2>
@@ -112,20 +112,39 @@
                     <hr class="solid short mt-lg">
                     <div class="row">
                         <div class="col-md-3">
-                            <div class="h4 text-bold mb-none mt-lg">488</div>
+                            <div class="h4 text-bold mb-none mt-lg">@householdsHelper.GetBudgetCountTotal()</div>
                             <p class="text-xs text-muted mb-none">Budgets</p>
                         </div>
                         <div class="col-md-3">
-                            <div class="h4 text-bold mb-none mt-lg">1000</div>
+                            <div class="h4 text-bold mb-none mt-lg">@householdsHelper.GetBudgetItemCountTotal()</div>
                             <p class="text-xs text-muted mb-none">Budget Items</p>
                         </div>
                         <div class="col-md-3">
-                            <div class="h4 text-bold mb-none mt-lg">123</div>
+                            <div class="h4 text-bold mb-none mt-lg">@householdsHelper.GetTransactionCountTotal()</div>
                             <p class="text-xs text-muted mb-none">Transactions</p>
                         </div>
                         <div class="col-md-3">
-                            <div class="h4 text-bold mb-none mt-lg">123</div>
+                            <div class="h4 text-bold mb-none mt-lg">@householdsHelper.GetMemberCountTotal()</div>
                             <p class="text-xs text-muted mb-none">Members</p>
+                        </div>
+                    </div>
+                    <hr class="solid short mt-lg">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">$@householdsHelper.GetBudgetDesiredAmount()</div>
+                            <p class="text-xs text-muted mb-none">Budget Amount</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">$@householdsHelper.GetBudgetItemDesiredAmount()</div>
+                            <p class="text-xs text-muted mb-none">Budget Items Amount</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">@householdsHelper.GetAccountCountTotal()</div>
+                            <p class="text-xs text-muted mb-none">Accounts</p>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="h4 text-bold mb-none mt-lg">$@Model.IncomeAmount</div>
+                            <p class="text-xs text-muted mb-none">Household Income</p>
                         </div>
                     </div>
                 </div>
@@ -135,8 +154,61 @@
         </div>
         <div class="col-md-6">
             <!-- Budget Graph -->
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                    </div>
 
+                    <h2 class="panel-title">Percentage Used</h2>
+                    <p class="panel-subtitle">Percentage of Account Income vs the allocated budgets and percentage of Budgets vs Budget Items</p>
+                </header>
+                <div class="panel-body">
+                    <div class="row text-center">
+                        <div class="col-md-6">
+                            <div class="circular-bar">
+                                <div class="circular-bar-chart" data-percent="@householdsHelper.GetEasyPieChartIncomePercent()" data-plugin-options='{ "barColor": "#0088CC", "delay": 300 }'>
+                                    <strong>Income</strong>
+                                    <label><span class="percent">@householdsHelper.GetEasyPieChartIncomePercent()</span>%</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="circular-bar">
+                                <div class="circular-bar-chart" data-percent="@householdsHelper.GetEasyPieChartBudgetPercent()" data-plugin-options='{ "barColor": "#2BAAB1", "delay": 600 }'>
+                                    <strong>Budget</strong>
+                                    <label><span class="percent">@householdsHelper.GetEasyPieChartBudgetPercent()</span>%</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <!-- Transaction Graph -->
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6">
+            <section class="panel">
+                <header class="panel-heading">
+                    <div class="panel-actions">
+                        <a href="#" class="fa fa-caret-down"></a>
+                    </div>
+
+                    <h2 class="panel-title">Account Transactions</h2>
+                    <p class="panel-subtitle">Transactions per account.</p>
+                </header>
+                <div class="panel-body">
+
+                    <!-- Morris: Bar -->
+                    <div class="chart chart-md" id="morrisBar"></div>
+
+                </div>
+            </section>
+        </div>
+        <div class="col-md-6">
 
         </div>
     </div>
@@ -232,11 +304,27 @@
         }
     </div>
 
-    
     <!-- end: page -->
 
 </section>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+
+    <script>
+        var urlDoubleLine = '@Url.Action("GetSideBarChartData", "AjaxData")';
+        $.post(urlDoubleLine).then(function (response) {
+            $('#morrisBar').empty();
+            new Morris.Bar({
+                resize: true,
+                element: 'morrisBar',
+                data: response,
+                xkey: 'y',
+                ykeys: ['a', 'b'],
+                labels: ['Withdrawls', 'Deposits'],
+                hideHover: true,
+                barColors: ['#0088cc', '#2baab1']
+            });
+        });
+    </script>
 }

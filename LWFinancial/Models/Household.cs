@@ -21,6 +21,7 @@ namespace LWFinancial.Models
         [Required]
         [Range(1, 100000, ErrorMessage = "Please enter an amount between 1 and 100,000.")]
         public Decimal IncomeAmount { get; set; }
+        public Decimal? CurrentBudgetAmount { get; set; }
 
         public virtual ICollection<Account> Accounts { get; set; }
         public virtual ICollection<Budget> Budgets { get; set; }

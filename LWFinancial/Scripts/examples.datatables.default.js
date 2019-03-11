@@ -10,8 +10,8 @@
 
 	};
 
-	//$(function() {
-	//	datatableInit();
-	//});
+	$(function() {
+		datatableInit();
+	});
 
 }).apply( this, [ jQuery ]);

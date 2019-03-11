@@ -1,63 +1,225 @@
 ﻿@model IEnumerable<LWFinancial.Models.HouseholdNotification>
 
-@{
-    ViewBag.Title = "Index";
+@using LWFinancial.Models
+@using Microsoft.AspNet.Identity
+
+<section role="main" class="content-body">
+    <header class="page-header">
+        <h2>Notifications</h2>
+
+        <div class="right-wrapper pull-right">
+            <ol class="breadcrumbs">
+                <li>
+                    <a href="@Url.Action("Index","Home")">
+                        <i class="fa fa-home"></i>
+                    </a>
+                </li>
+                <li><span>Dashboard</span></li>
+                <li><span>Notifications</span></li>
+            </ol>
+
+            <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
+        </div>
+    </header>
+
+    <!-- start: page -->
+
+    <section class="content-with-menu mailbox">
+        <div class="content-with-menu-container" data-mailbox data-mailbox-view="folder">
+
+            <div class="inner-body mailbox-folder">
+                <!-- START: .mailbox-header -->
+                <header class="mailbox-header">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <h1 class="mailbox-title text-light m-none">
+                                <a id="mailboxToggleSidebar" class="sidebar-toggle-btn trigger-toggle-sidebar">
+                                    <span class="line"></span>
+                                    <span class="line"></span>
+                                    <span class="line"></span>
+                                    <span class="line line-angle1"></span>
+                                    <span class="line line-angle2"></span>
+                                </a>
+
+                                Inbox
+                            </h1>
+                        </div>
+                        <div class="col-sm-4">
+                            @*<a href="@Url.Action("Create","HouseholdNotifications")" class="btn btn-block btn-primary btn-md pt-sm pb-sm text-md">
+                                <i class="fa fa-envelope mr-xs"></i>
+                                Compose
+                            </a>*@
+                        </div>
+                        <div class="col-sm-4">
+
+                        </div>
+                    </div>
+                </header>
+                <!-- END: .mailbox-header -->
+
+                <div id="mailbox-email-list" class="mailbox-email-list">
+                    <div class="nano">
+                        <div class="nano-content">
+                            <ul id="" class="list-unstyled">
+                                @foreach (var item in Model.OrderByDescending(n => n.Created))
+                                {
+                                    if (item.RecipientId == User.Identity.GetUserId())
+                                    {
+                                        if (item.Read)
+                                        {
+                                            <li>
+                                                <div class="col-sender">
+                                                    <div class="checkbox-custom ib">
+                                                        @using (Html.BeginForm("Edit", "HouseholdNotifications", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("Id", item.Id)
+                                                            @Html.Hidden("HouseholdId", item.HouseholdId)
+                                                            @Html.Hidden("RecipientId", item.RecipientId)
+                                                            @Html.Hidden("Title", item.Title)
+                                                            @Html.Hidden("Decscription", item.Decscription)
+                                                            @Html.Hidden("Created", item.Created)
+                                                            @Html.Hidden("notificationRead", false)
+
+                                                            <button class="fa fa-check text-success" type="submit"></button>
+                                                        }
+                                                    </div>
+
+                                                    <div class="checkbox-custom ib">
+                                                        @using (Html.BeginForm("Delete", "HouseholdNotifications", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("id", item.Id)
+
+                                                            <button class="fa fa-times text-danger" type="submit"></button>
+                                                        }
+                                                    </div>
+                                                    <p class="m-none ib">@item.Recipient.FirstName @item.Recipient.LastName</p>
+                                                </div>
+                                                <a href="@Url.Action("Details","HouseholdNotifications", new { id = item.Id})">
+                                                    <div class="col-mail">
+                                                        <p class="m-none mail-content">
+                                                            <span class="subject">@item.Decscription</span>
+                                                        </p>
+                                                        <p class="m-none mail-date">@item.Created.ToString("MM/dd/yy h:mm tt")</p>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li class="unread">
+                                                <div class="col-sender">
+                                                    <div class="checkbox-custom checkbox-text-primary ib">
+                                                        @using (Html.BeginForm("Edit", "HouseholdNotifications", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("Id", item.Id)
+                                                            @Html.Hidden("HouseholdId", item.HouseholdId)
+                                                            @Html.Hidden("RecipientId", item.RecipientId)
+                                                            @Html.Hidden("Title", item.Title)
+                                                            @Html.Hidden("Decscription", item.Decscription)
+                                                            @Html.Hidden("Created", item.Created)
+                                                            @Html.Hidden("notificationRead", true)
+
+                                                            <button class="fa fa-check text-info" type="submit"></button>
+                                                        }
+                                                    </div>
+
+                                                    <div class="checkbox-custom ib">
+                                                        @using (Html.BeginForm("Delete", "HouseholdNotifications", FormMethod.Post, new { @class = "form-horizontal" }))
+                                                        {
+                                                            @Html.AntiForgeryToken()
+                                                            @Html.Hidden("id", item.Id)
+
+                                                            <button class="fa fa-times text-danger" type="submit"></button>
+                                                        }
+                                                    </div>
+                                                    <p class="m-none ib">@item.Recipient.FirstName @item.Recipient.LastName</p>
+                                                </div>
+                                                <a href="@Url.Action("Details","HouseholdNotifications", new { id = item.Id})">
+                                                    <div class="col-mail">
+                                                        <p class="m-none mail-content">
+                                                            <span class="subject">@item.Decscription</span>
+                                                        </p>
+                                                        <p class="m-none mail-date">@item.Created.ToString("MM/dd/yy h:mm tt")</p>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    }
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
 }
 
-<h2>Index</h2>
+@*@{
+        ViewBag.Title = "Index";
+    }
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
-<table class="table">
-    <tr>
-        <th>
-            @Html.DisplayNameFor(model => model.Household.Name)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Recipient.FirstName)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Decscription)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Read)
-        </th>
-        <th></th>
-    </tr>
+    <h2>Index</h2>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Household.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Recipient.FirstName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Decscription)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Read)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-        </td>
-    </tr>
-}
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Household.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Recipient.FirstName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Decscription)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Read)
+            </th>
+            <th></th>
+        </tr>
 
-</table>
+    @foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Household.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Recipient.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Decscription)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Created)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Read)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            </td>
+        </tr>
+    }
+
+    </table>*@

@@ -17,6 +17,7 @@ using System.IO;
 namespace LWFinancial.Controllers
 {
     [Authorize]
+    [RequireHttps]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;

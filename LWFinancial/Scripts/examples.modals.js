@@ -7,108 +7,108 @@
 	/*
 	Basic
 	*/
-	$('.modal-basic').magnificPopup({
-		type: 'inline',
-		preloader: false,
-		modal: true
-	});
+	//$('.modal-basic').magnificPopup({
+	//	type: 'inline',
+	//	preloader: false,
+	//	modal: true
+	//});
 
 	/*
 	Sizes
 	*/
-	$('.modal-sizes').magnificPopup({
-		type: 'inline',
-		preloader: false,
-		modal: true
-	});
+	//$('.modal-sizes').magnificPopup({
+	//	type: 'inline',
+	//	preloader: false,
+	//	modal: true
+	//});
 
 	/*
 	Modal with CSS animation
 	*/
-	$('.modal-with-zoom-anim').magnificPopup({
-		type: 'inline',
+	//$('.modal-with-zoom-anim').magnificPopup({
+	//	type: 'inline',
 
-		fixedContentPos: false,
-		fixedBgPos: true,
+	//	fixedContentPos: false,
+	//	fixedBgPos: true,
 
-		overflowY: 'auto',
+	//	overflowY: 'auto',
 
-		closeBtnInside: true,
-		preloader: false,
+	//	closeBtnInside: true,
+	//	preloader: false,
 		
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-zoom-in',
-		modal: true
-	});
+	//	midClick: true,
+	//	removalDelay: 300,
+	//	mainClass: 'my-mfp-zoom-in',
+	//	modal: true
+	//});
 
-	$('.modal-with-move-anim').magnificPopup({
-		type: 'inline',
+	//$('.modal-with-move-anim').magnificPopup({
+	//	type: 'inline',
 
-		fixedContentPos: false,
-		fixedBgPos: true,
+	//	fixedContentPos: false,
+	//	fixedBgPos: true,
 
-		overflowY: 'auto',
+	//	overflowY: 'auto',
 
-		closeBtnInside: true,
-		preloader: false,
+	//	closeBtnInside: true,
+	//	preloader: false,
 		
-		midClick: true,
-		removalDelay: 300,
-		mainClass: 'my-mfp-slide-bottom',
-		modal: true
-	});
+	//	midClick: true,
+	//	removalDelay: 300,
+	//	mainClass: 'my-mfp-slide-bottom',
+	//	modal: true
+	//});
 
 	/*
 	Modal Dismiss
 	*/
-	$(document).on('click', '.modal-dismiss', function (e) {
-		e.preventDefault();
-		$.magnificPopup.close();
-	});
+	//$(document).on('click', '.modal-dismiss', function (e) {
+	//	e.preventDefault();
+	//	$.magnificPopup.close();
+	//});
 
 	/*
 	Modal Confirm
 	*/
-	$(document).on('click', '.modal-confirm', function (e) {
-		e.preventDefault();
-		$.magnificPopup.close();
+	//$(document).on('click', '.modal-confirm', function (e) {
+	//	e.preventDefault();
+	//	$.magnificPopup.close();
 
-		new PNotify({
-			title: 'Success!',
-			text: 'Your invite has been sent.',
-			type: 'success'
-		});
-	});
+	//	new PNotify({
+	//		title: 'Success!',
+	//		text: 'Your invite has been sent.',
+	//		type: 'success'
+	//	});
+	//});
 
 	/*
 	Form
 	*/
-	$('.modal-with-form').magnificPopup({
-		type: 'inline',
-		preloader: false,
-		focus: '#name',
-		modal: true,
+	//$('.modal-with-form').magnificPopup({
+	//	type: 'inline',
+	//	preloader: false,
+	//	focus: '#name',
+	//	modal: true,
 
-		// When elemened is focused, some mobile browsers in some cases zoom in
-		// It looks not nice, so we disable it:
-		callbacks: {
-			beforeOpen: function() {
-				if($(window).width() < 700) {
-					this.st.focus = false;
-				} else {
-					this.st.focus = '#name';
-				}
-			}
-		}
-	});
+	//	// When elemened is focused, some mobile browsers in some cases zoom in
+	//	// It looks not nice, so we disable it:
+	//	callbacks: {
+	//		beforeOpen: function() {
+	//			if($(window).width() < 700) {
+	//				this.st.focus = false;
+	//			} else {
+	//				this.st.focus = '#name';
+	//			}
+	//		}
+	//	}
+	//});
 
 	/*
 	Ajax
 	*/
-	$('.simple-ajax-modal').magnificPopup({
-		type: 'ajax',
-		modal: true
-	});
+	//$('.simple-ajax-modal').magnificPopup({
+	//	type: 'ajax',
+	//	modal: true
+	//});
 
 }).apply( this, [ jQuery ]);

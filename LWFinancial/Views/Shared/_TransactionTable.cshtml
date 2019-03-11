@@ -1,0 +1,110 @@
+﻿@model IEnumerable<LWFinancial.Models.Transaction>
+
+@using LWFinancial.Helpers
+@using LWFinancial.Enumerations
+@using Microsoft.AspNet.Identity
+
+@*<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+        </div>
+
+        <h2 class="panel-title">Transactions</h2>
+    </header>
+    <div class="panel-body">
+        <div class="table-responsive">
+            <table class="table table-hover mb-none">
+                <thead>
+                    <tr>
+                        <th>@Html.DisplayName("Account Name")</th>
+                        <th>@Html.DisplayName("Budget Item Name")</th>
+                        <th>@Html.DisplayName("Transaction Name")</th>
+                        <th>@Html.DisplayName("Type")</th>
+                        <th>@Html.DisplayNameFor(model => model.Amount)</th>
+                        <th>@Html.DisplayName("Reconciled Amount")</th>
+                        <th>@Html.DisplayName("Entered By")</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var item in Model.OrderByDescending(c => c.Created))
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Account.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.BudgetItem.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                            <td>$@Html.DisplayFor(modelItem => item.Amount)</td>
+                            @if (item.ReconciledAmount > 0)
+                            {
+                                <td>$@Html.DisplayFor(modelItem => item.ReconciledAmount)</td>
+                            }
+                            else
+                            {
+                                <td>@Html.DisplayFor(modelItem => item.ReconciledAmount)</td>
+                            }
+                            <td>@Html.DisplayFor(modelItem => item.EnteredBy.FullName)</td>
+                            <td class="actions-hover actions-fade">
+                                <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-info" data-toggle="modal" data-target="#editModal" data-id="@item.Id" data-accountid="@item.AccountId" data-budgetitemid="@item.BudgetItemId" data-transactionname="@item.Name" data-transactiontype="@item.Type" data-transactionamount="@item.Amount" data-transactionreconciledamount="@item.ReconciledAmount">Edit</a>
+                                <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-id="@item.Id">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>*@
+
+<section class="panel">
+    <header class="panel-heading">
+        <div class="panel-actions">
+            <a href="#" class="fa fa-caret-down"></a>
+        </div>
+
+        <h2 class="panel-title">Transactions</h2>
+    </header>
+    <div class="panel-body">
+        <table class="table table-hover mb-none" id="datatable-default">
+            <thead>
+                <tr>
+                    <th>@Html.DisplayName("Account Name")</th>
+                    <th>@Html.DisplayName("Budget Item Name")</th>
+                    <th>@Html.DisplayName("Transaction Name")</th>
+                    <th>@Html.DisplayName("Type")</th>
+                    <th>@Html.DisplayNameFor(model => model.Amount)</th>
+                    <th>@Html.DisplayName("Reconciled Amount")</th>
+                    <th>@Html.DisplayName("Entered By")</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderByDescending(c => c.Created))
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Account.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.BudgetItem.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                        <td>@Html.DisplayFor(modelItem => item.Type)</td>
+                        <td>$@Html.DisplayFor(modelItem => item.Amount)</td>
+                        @if (item.ReconciledAmount > 0)
+                        {
+                            <td>$@Html.DisplayFor(modelItem => item.ReconciledAmount)</td>
+                        }
+                        else
+                        {
+                            <td>@Html.DisplayFor(modelItem => item.ReconciledAmount)</td>
+                        }
+                        <td>@Html.DisplayFor(modelItem => item.EnteredBy.FullName)</td>
+                        <td class="actions-hover actions-fade">
+                            <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-info" data-toggle="modal" data-target="#editModal" data-id="@item.Id" data-accountid="@item.AccountId" data-budgetitemid="@item.BudgetItemId" data-transactionname="@item.Name" data-transactiontype="@item.Type" data-transactionamount="@item.Amount" data-transactionreconciledamount="@item.ReconciledAmount">Edit</a>
+                            <a style="color:white" class="mb-xs mt-xs mr-xs modal-with-move-anim btn btn-danger" data-toggle="modal" data-target="#deleteModal" data-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</section>

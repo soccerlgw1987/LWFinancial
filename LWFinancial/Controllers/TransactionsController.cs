@@ -6,19 +6,39 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using LWFinancial.Enumerations;
+using LWFinancial.Helpers;
 using LWFinancial.Models;
+using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
+    [RequireHttps]
     public class TransactionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private HouseholdsHelper householdHelper = new HouseholdsHelper();
+        private AccountHelper accountHelper = new AccountHelper();
+        private BudgetItemHelper budgetItemHelper = new BudgetItemHelper();
+        private NotificationHelper notificationHelper = new NotificationHelper();
 
         // GET: Transactions
         public ActionResult Index()
         {
             var transactions = db.Transactions.Include(t => t.Account).Include(t => t.BudgetItem).Include(t => t.EnteredBy);
             return View(transactions.ToList());
+        }
+
+        // GET: Transactions
+        public ActionResult IndexMy()
+        {
+            var householdId = householdHelper.ListUserHousehold(User.Identity.GetUserId());
+
+            ViewBag.AccountId = new SelectList(db.Accounts.Where(h => h.HouseholdId == householdId).ToList(), "Id", "Name");
+            //LWTODO
+            ViewBag.BudgetItemId = new SelectList(db.BudgetItems.ToList(), "Id", "Name");
+
+            return View();
         }
 
         // GET: Transactions/Details/5
@@ -50,13 +70,49 @@ namespace LWFinancial.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "Id,Name,Type,Created,Updated,Amount,ReconciledAmount,Reconciled,AccountId,BudgetItemId,EnteredById")] Transaction transaction)
+        public ActionResult Create([Bind(Include = "Id,Name,Type,Amount,AccountId,BudgetItemId")] Transaction transaction)
         {
-            if (ModelState.IsValid)
+            var errors = ModelState.Values.SelectMany(v => v.Errors);
+
+            if(transaction.Type == TransactionType.Deposit && transaction.BudgetItemId > 0)
             {
-                db.Transactions.Add(transaction);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
+                ViewBag.BudgetItemId = new SelectList(db.BudgetItems, "Id", "Name", transaction.BudgetItemId);
+                ViewBag.EnteredById = new SelectList(db.Users, "Id", "FirstName", transaction.EnteredById);
+                return View(transaction);
+            }
+            else
+            {
+                if (ModelState.IsValid)
+                {
+                    transaction.Created = DateTime.Now;
+                    transaction.EnteredById = User.Identity.GetUserId();
+
+                    if(transaction.Type == TransactionType.Withdrawl)
+                    {
+                        budgetItemHelper.UpdateBudgetItemIncome(transaction.BudgetItemId, transaction.Amount);
+                        accountHelper.UpdateAccountWithdrawlIncome(transaction.AccountId, transaction.Amount);
+                    }
+                    else
+                    {
+                        accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+                    }
+
+                    db.Transactions.Add(transaction);
+                    db.SaveChanges();
+
+                    Account account = db.Accounts.Find(transaction.AccountId);
+                    if(account.CurrentBalance <= 0)
+                    {
+                        notificationHelper.GetOverdraftNotification(householdHelper.ListUserHousehold(User.Identity.GetUserId()), transaction.Account.Name);
+                    }
+                    else if(account.CurrentBalance <= account.LowBalanceWarning)
+                    {
+                        notificationHelper.GetLowBalanceNotification(householdHelper.ListUserHousehold(User.Identity.GetUserId()), transaction.Account.Name);
+                    }
+
+                    return RedirectToAction("IndexMy");
+                }
             }
 
             ViewBag.AccountId = new SelectList(db.Accounts, "Id", "Name", transaction.AccountId);
@@ -83,12 +139,75 @@ namespace LWFinancial.Controllers
             return View(transaction);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Edit(int transactionId, int accountId, int budgetItemId, string transactionName, string transactionType, decimal transactionAmount, decimal transactionReconciledAmount)
+        {
+            var transaction = db.Transactions.Find(transactionId);
+
+            if (transaction.Type == TransactionType.Withdrawl)
+            {
+                budgetItemHelper.UpdateBudgetItemWithdrawlIncome(transaction.BudgetItemId, transaction.Amount);
+                accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+            }
+            else
+            {
+                
+                accountHelper.UpdateAccountWithdrawlIncome(transaction.AccountId, transaction.Amount);
+            }
+
+            db.SaveChanges();
+
+            transaction.AccountId = accountId;
+            transaction.BudgetItemId = budgetItemId;
+            transaction.Name = transactionName;
+            if(transactionType == "Deposit")
+            {
+                transaction.Type = TransactionType.Deposit;
+            }
+            else
+            {
+                transaction.Type = TransactionType.Withdrawl;
+            }
+            transaction.EnteredById = User.Identity.GetUserId();
+            transaction.Updated = DateTime.Now;
+            db.SaveChanges();
+            //LWTODO
+            if (transaction.Type == TransactionType.Withdrawl)
+            {
+                budgetItemHelper.UpdateBudgetItemIncome(transaction.BudgetItemId, transaction.Amount);
+                accountHelper.UpdateAccountWithdrawlIncome(transaction.AccountId, transaction.Amount);
+            }
+            else
+            {
+                accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+            }
+            transaction.Amount = transactionAmount;
+            if(transactionReconciledAmount == 0)
+            {
+                transaction.ReconciledAmount = transactionReconciledAmount;
+            }
+
+            //etc...
+            db.Transactions.Attach(transaction);
+            db.Entry(transaction).Property(a => a.AccountId).IsModified = true;
+            db.Entry(transaction).Property(a => a.BudgetItemId).IsModified = true;
+            db.Entry(transaction).Property(a => a.Name).IsModified = true;
+            db.Entry(transaction).Property(a => a.EnteredById).IsModified = true;
+            db.Entry(transaction).Property(a => a.Amount).IsModified = true;
+            db.Entry(transaction).Property(a => a.ReconciledAmount).IsModified = true;
+            db.Entry(transaction).Property(a => a.Updated).IsModified = true;
+            //etc... for each property that you want to be able to change in the edit.
+            db.SaveChanges();
+            return RedirectToAction("IndexMy"); //or whatever.
+        }
+
         // POST: Transactions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "Id,Name,Type,Created,Updated,Amount,ReconciledAmount,Reconciled,AccountId,BudgetItemId,EnteredById")] Transaction transaction)
+        public ActionResult EditOld([Bind(Include = "Id,Name,Type,Created,Updated,Amount,ReconciledAmount,Reconciled,AccountId,BudgetItemId,EnteredById")] Transaction transaction)
         {
             if (ModelState.IsValid)
             {
@@ -120,12 +239,25 @@ namespace LWFinancial.Controllers
         // POST: Transactions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
+        public ActionResult DeleteConfirmed(int transactionId)
         {
-            Transaction transaction = db.Transactions.Find(id);
+            Transaction transaction = db.Transactions.Find(transactionId);
+
+            if (transaction.Type == TransactionType.Withdrawl)
+            {
+                budgetItemHelper.UpdateBudgetItemWithdrawlIncome(transaction.BudgetItemId, transaction.Amount);
+                accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+            }
+            else
+            {
+                accountHelper.UpdateAccountWithdrawlIncome(transaction.AccountId, transaction.Amount);
+            }
+
+            db.SaveChanges();
+
             db.Transactions.Remove(transaction);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("IndexMy");
         }
 
         protected override void Dispose(bool disposing)

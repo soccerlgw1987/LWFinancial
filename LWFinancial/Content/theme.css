@@ -14860,8 +14860,8 @@ html.dark .CodeMirror pre {
 	top: 0;
 }
 .mailbox .mailbox-email-list .col-mail .mail-content {
-	left: 85px;
-	right: 140px;
+	left: 0px;
+	right: 156px;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
