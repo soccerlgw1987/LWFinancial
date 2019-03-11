@@ -10,6 +10,7 @@ using System.Web.Mvc;
 
 namespace LWFinancial.Controllers
 {
+    [Authorize]
     public class AjaxDataController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

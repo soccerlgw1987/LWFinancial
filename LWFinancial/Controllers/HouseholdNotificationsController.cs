@@ -11,6 +11,7 @@ using LWFinancial.Models;
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class HouseholdNotificationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

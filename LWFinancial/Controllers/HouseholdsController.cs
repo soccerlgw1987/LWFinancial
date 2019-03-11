@@ -16,6 +16,7 @@ using Microsoft.AspNet.Identity;
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class HouseholdsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -73,7 +74,13 @@ namespace LWFinancial.Controllers
             {
                 return HttpNotFound();
             }
-            return View(household);
+
+            if(houseHelper.IsUserInHousehold(User.Identity.GetUserId(), id))
+            {
+                return View(household);
+            }
+
+            return RedirectToAction("InvalidAttempt", "Home");
         }
 
         // Post: Households/Leave/

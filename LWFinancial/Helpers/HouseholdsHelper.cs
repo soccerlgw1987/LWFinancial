@@ -27,7 +27,7 @@ namespace LWFinancial.Helpers
             return db.Households.Find(householdId).ApplicationUsers;
         }
 
-        public bool IsUserInHousehold(string userId, int householdId)
+        public bool IsUserInHousehold(string userId, int? householdId)
         {
             var household = db.Households.Find(householdId);
             var flag = household.ApplicationUsers.Any(u => u.Id == userId);
@@ -162,7 +162,11 @@ namespace LWFinancial.Helpers
                 }
             }
 
-            decimal percent = decimal.Divide(budgetItemTotal, budgetTotal) * 100;
+            decimal percent = 0;
+            if(budgetTotal > 0)
+            {
+                percent = decimal.Divide(budgetItemTotal, budgetTotal) * 100;
+            }
 
             return percent;
         }

@@ -10,14 +10,16 @@ namespace LWFinancial.Helpers
     public class BudgetItemHelper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-        //LWTODO
+
         public ICollection<BudgetItem> ListBudgetItems(int householdId)
         {
-            Budget budgets = db.Budgets.FirstOrDefault(h => h.HouseholdId == householdId);
+            var household = db.Households.Find(householdId);
 
-            var budgetitems = budgets.BudgetItems.ToList();
+            var budgetsItems = household.Budgets.SelectMany(b => b.BudgetItems);
 
-            return budgetitems;
+            //var budgetsItems = db.Households.Find(householdId).Budgets.SelectMany(b => b.BudgetItems);
+
+            return budgetsItems.ToList();
         }
 
         public void UpdateBudgetItemIncome(int? budgetItemId, decimal desiredAmount)
@@ -51,6 +53,5 @@ namespace LWFinancial.Helpers
 
             db.SaveChanges();
         }
-
     }
 }

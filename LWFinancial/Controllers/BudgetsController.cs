@@ -8,10 +8,12 @@ using System.Web;
 using System.Web.Mvc;
 using LWFinancial.Models;
 using LWFinancial.Helpers;
+using Microsoft.AspNet.Identity;
 
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class BudgetsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -27,7 +29,19 @@ namespace LWFinancial.Controllers
         // GET: Budgets
         public ActionResult IndexMy()
         {
-            return View();
+            var userId = User.Identity.GetUserId();
+            int userHousehold = householdHelper.ListUserHousehold(userId);
+
+            if (userHousehold == 0)
+            {
+                return RedirectToAction("InvalidAttempt", "Home");
+            }
+            else if(householdHelper.IsUserInHousehold(userId, userHousehold))
+            {
+                return View();
+            }
+
+            return RedirectToAction("InvalidAttempt", "Home");
         }
 
         // GET: Budgets/Details/5

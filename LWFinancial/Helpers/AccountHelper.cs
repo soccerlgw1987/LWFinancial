@@ -52,5 +52,30 @@ namespace LWFinancial.Helpers
 
             db.SaveChanges();
         }
+
+        public void UpdateReconciledIncome(int? accountId, decimal? reconciledAmount)
+        {
+            Account account = db.Accounts.Find(accountId);
+            if (account.ReconciledBalance == null)
+            {
+                account.ReconciledBalance = 0;
+                account.ReconciledBalance = account.ReconciledBalance + reconciledAmount;
+            }
+            else
+            {
+                account.ReconciledBalance = account.ReconciledBalance + reconciledAmount;
+            }
+
+            db.SaveChanges();
+        }
+
+        public void UpdateReconciledWithdrawlIncome(int? accountId, decimal? reconciledAmount)
+        {
+            Account account = db.Accounts.Find(accountId);
+
+            account.ReconciledBalance = account.ReconciledBalance - reconciledAmount;
+
+            db.SaveChanges();
+        }
     }
 }

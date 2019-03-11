@@ -14,6 +14,7 @@ using Microsoft.AspNet.Identity;
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class TransactionsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
@@ -21,6 +22,7 @@ namespace LWFinancial.Controllers
         private AccountHelper accountHelper = new AccountHelper();
         private BudgetItemHelper budgetItemHelper = new BudgetItemHelper();
         private NotificationHelper notificationHelper = new NotificationHelper();
+        private TransactionHelper transactionHelper = new TransactionHelper();
 
         // GET: Transactions
         public ActionResult Index()
@@ -32,13 +34,26 @@ namespace LWFinancial.Controllers
         // GET: Transactions
         public ActionResult IndexMy()
         {
-            var householdId = householdHelper.ListUserHousehold(User.Identity.GetUserId());
+            var userId = User.Identity.GetUserId();
+            int userHousehold = householdHelper.ListUserHousehold(userId);
 
-            ViewBag.AccountId = new SelectList(db.Accounts.Where(h => h.HouseholdId == householdId).ToList(), "Id", "Name");
-            //LWTODO
-            ViewBag.BudgetItemId = new SelectList(db.BudgetItems.ToList(), "Id", "Name");
+            if (userHousehold == 0)
+            {
+                return RedirectToAction("InvalidAttempt", "Home");
+            }
+            else if (householdHelper.IsUserInHousehold(userId, userHousehold))
+            {
+                var householdId = householdHelper.ListUserHousehold(User.Identity.GetUserId());
+                var accounts = db.Accounts.Where(h => h.HouseholdId == householdId).ToList();
+                var budgetItems = db.Households.Find(householdId).Budgets.SelectMany(b => b.BudgetItems);
 
-            return View();
+                ViewBag.AccountId = new SelectList(accounts, "Id", "Name");
+                ViewBag.BudgetItemId = new SelectList(budgetItems, "Id", "Name");
+
+                return View();
+            }
+
+            return RedirectToAction("InvalidAttempt", "Home");
         }
 
         // GET: Transactions/Details/5
@@ -141,7 +156,7 @@ namespace LWFinancial.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int transactionId, int accountId, int budgetItemId, string transactionName, string transactionType, decimal transactionAmount, decimal transactionReconciledAmount)
+        public ActionResult Edit(int transactionId, int AccountId, int? BudgetItemId, string transactionName, string transactionType, decimal transactionAmount, decimal? transactionReconciledAmount)
         {
             var transaction = db.Transactions.Find(transactionId);
 
@@ -149,17 +164,21 @@ namespace LWFinancial.Controllers
             {
                 budgetItemHelper.UpdateBudgetItemWithdrawlIncome(transaction.BudgetItemId, transaction.Amount);
                 accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+                if(transaction.ReconciledAmount > 0)
+                {
+                    transactionHelper.UpdateReconciledWithdrawlIncome(transaction.Id, transaction.ReconciledAmount);
+                    accountHelper.UpdateReconciledWithdrawlIncome(transaction.AccountId, transaction.ReconciledAmount);
+                }
             }
             else
             {
-                
                 accountHelper.UpdateAccountWithdrawlIncome(transaction.AccountId, transaction.Amount);
             }
 
             db.SaveChanges();
 
-            transaction.AccountId = accountId;
-            transaction.BudgetItemId = budgetItemId;
+            transaction.AccountId = AccountId;
+            transaction.BudgetItemId = BudgetItemId;
             transaction.Name = transactionName;
             if(transactionType == "Deposit")
             {
@@ -171,8 +190,9 @@ namespace LWFinancial.Controllers
             }
             transaction.EnteredById = User.Identity.GetUserId();
             transaction.Updated = DateTime.Now;
+            transaction.Amount = transactionAmount;
             db.SaveChanges();
-            //LWTODO
+
             if (transaction.Type == TransactionType.Withdrawl)
             {
                 budgetItemHelper.UpdateBudgetItemIncome(transaction.BudgetItemId, transaction.Amount);
@@ -182,9 +202,12 @@ namespace LWFinancial.Controllers
             {
                 accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
             }
-            transaction.Amount = transactionAmount;
-            if(transactionReconciledAmount == 0)
+            
+            if(transactionReconciledAmount > 0)
             {
+                transactionHelper.UpdateReconciledIncome(transaction.Id, transactionReconciledAmount);
+                accountHelper.UpdateReconciledIncome(transaction.AccountId, transactionReconciledAmount);
+
                 transaction.ReconciledAmount = transactionReconciledAmount;
             }
 
@@ -247,6 +270,11 @@ namespace LWFinancial.Controllers
             {
                 budgetItemHelper.UpdateBudgetItemWithdrawlIncome(transaction.BudgetItemId, transaction.Amount);
                 accountHelper.UpdateAccountIncome(transaction.AccountId, transaction.Amount);
+                if (transaction.ReconciledAmount > 0)
+                {
+                    transactionHelper.UpdateReconciledWithdrawlIncome(transaction.Id, transaction.ReconciledAmount);
+                    accountHelper.UpdateReconciledWithdrawlIncome(transaction.AccountId, transaction.ReconciledAmount);
+                }
             }
             else
             {

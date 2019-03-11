@@ -12,6 +12,7 @@ using System.Web.Mvc;
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class HomeController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();

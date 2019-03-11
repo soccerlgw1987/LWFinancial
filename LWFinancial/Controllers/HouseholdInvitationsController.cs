@@ -16,6 +16,7 @@ using Microsoft.AspNet.Identity;
 namespace LWFinancial.Controllers
 {
     [RequireHttps]
+    [Authorize]
     public class HouseholdInvitationsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
