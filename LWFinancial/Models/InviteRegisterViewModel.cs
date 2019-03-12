@@ -8,6 +8,7 @@ namespace LWFinancial.Models
 {
     public class InviteRegisterViewModel
     {
+        //LWTODO
         public RegisterViewModel RegisterVM { get; set; }
 
         [Required]

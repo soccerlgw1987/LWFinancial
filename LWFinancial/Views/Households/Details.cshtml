@@ -194,7 +194,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-offset-1 col-md-10">
             <section class="panel">
                 <header class="panel-heading">
                     <div class="panel-actions">
@@ -211,9 +211,6 @@
 
                 </div>
             </section>
-        </div>
-        <div class="col-md-6">
-
         </div>
     </div>
 
@@ -280,49 +277,6 @@
                     </div>
                 </div>
             </div>
-
-            @*<div id="inviteModal" class="zoom-anim-dialog modal-block modal-block-primary mfp-hide">
-                    <section class="panel">
-                        <header class="panel-heading">
-                            <h2 class="panel-title">Create an invitation to join @Model.Name</h2>
-                        </header>
-                        <div class="panel-body">
-                            @if (User.IsInRole(RoleNames.HOH.ToString()))
-                            {
-                                using (Html.BeginForm("Create", "HouseholdInvitations", FormMethod.Post, new { @class = "form-horizontal mb-lg" }))
-                                {
-                                    @Html.AntiForgeryToken()
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Email</label>
-                                        <div class="col-sm-9">
-                                            @Html.Editor("Email", new { htmlAttributes = new { @class = "form-control", placeholder = "Type recipient email..." } })
-                                        </div>
-                                    </div>
-                                    <div class="form-group mt-lg">
-                                        <label class="col-sm-3 control-label">Subject</label>
-                                        <div class="col-sm-9">
-                                            @Html.Editor("Subject", new { htmlAttributes = new { @class = "form-control", placeholder = "Type the subject..." } })
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <label class="col-sm-3 control-label">Message</label>
-                                        <div class="col-sm-9">
-                                            <textarea rows="5" name="Body" class="form-control" placeholder="Type your message..."></textarea>
-                                        </div>
-                                    </div>
-                                    <footer class="panel-footer">
-                                        <div class="row">
-                                            <div class="col-md-12 text-right">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                                <input type="submit" value="Cancel" class="btn btn-default modal-dismiss" />
-                                            </div>
-                                        </div>
-                                    </footer>
-                                }
-                            }
-                        </div>
-                    </section>
-                </div>*@
         }
         <br />
 
@@ -342,7 +296,6 @@
                                     {
                                         <img src="~/img/!logged-user.jpg" alt="Joseph Doe" class="img-responsive" data-lock-picture="~/img/!logged-user.jpg" />
                                     }
-
                                 </div>
                             </div>
                             <div class="widget-summary-col">
@@ -350,7 +303,7 @@
                                     <h2>@user.FullName</h2>
                                 </div>
                                 <div class="summary-footer">
-                                    <a class="text-muted text-uppercase">Transactions: 3765</a>
+                                    @*<a class="text-muted text-uppercase">Transactions: @householdsHelper.GetTransactionCountTotal()</a>*@
                                 </div>
                             </div>
                         </div>

@@ -1,4 +1,6 @@
 ﻿using LWFinancial.Models;
+using LWFinancial.Helpers;
+using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +11,7 @@ namespace LWFinancial.Helpers
     public class TransactionHelper
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private HouseholdsHelper householdHelper = new HouseholdsHelper();
 
         public ICollection<Transaction> ListTransactions(int householdId)
         {

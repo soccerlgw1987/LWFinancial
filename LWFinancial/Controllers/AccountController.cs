@@ -169,6 +169,7 @@ namespace LWFinancial.Controllers
         }
 
         // GET: /Account/RegisterNew
+        //LWTODO
         [AllowAnonymous]
         public ActionResult RegisterNew(string email, string keycode, int householdId)
         {

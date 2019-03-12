@@ -116,7 +116,8 @@ namespace LWFinancial.Controllers
             }
             else
             {
-                var callbackUrl2 = Url.Action("RegisterNew", "Account", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
+                //LWTODO - register to registernew
+                var callbackUrl2 = Url.Action("Register", "Account", new { email = invitation.Email, keycode = invitation.UniqueKey, householdId = invitation.HouseholdId }, protocol: Request.Url.Scheme);
                 var acceptLink2 = "You can accept your invitation by clicking <a href=\"" + callbackUrl2 + "\">here</a>";
 
                 var from2 = "LWFinancial <LWFinancial@mailinator.com>";

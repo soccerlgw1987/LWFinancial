@@ -110,9 +110,9 @@ namespace LWFinancial.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int budgetItemId, string budgetItemName, decimal desiredAmount)
+        public ActionResult Edit(int BudgetId, string budgetItemName, decimal desiredAmount)
         {
-            var budgetItem = db.BudgetItems.Find(budgetItemId);
+            var budgetItem = db.BudgetItems.Find(BudgetId);
             decimal newBudgetItem = 0;
             budgetItem.Name = budgetItemName;
             if (budgetItem.DesiredAmount == desiredAmount)
