@@ -493,6 +493,7 @@
     <Content Include="Uploads\HeadPic.jpg" />
     <Content Include="Uploads\pmHead.png" />
     <Content Include="Uploads\subHead.png" />
+    <Content Include="Uploads\Tara.jpg" />
     <Content Include="Uploads\Yijing.JPG" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
